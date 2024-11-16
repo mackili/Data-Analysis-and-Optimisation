@@ -27,7 +27,10 @@ def __request_vagonweb__(
     context = ssl._create_unverified_context()
     # headers = {"User-Agent": "PostmanRuntime/7.42.0", "Connection": "keep-alive"}
     req = Request(url)
-    req.add_header("User-Agent", "PostmanRuntime/7.42.0")
+    req.add_header(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    )
     req.add_header("Connection", "keep-alive")
 
     try:
@@ -40,12 +43,8 @@ def __request_vagonweb__(
     return BeautifulSoup(html_content, "html.parser")
 
 
-def __extract_train_class__(soup: BeautifulSoup, number: str) -> dict:
-    result = {
-        "number": "",
-        "formation": [],
-    }
-    result["number"] = number
+def __extract_train_class__(soup: BeautifulSoup) -> list:
+    result = []
     vlacek_table = soup.find("table", class_="vlacek")
 
     if vlacek_table:
@@ -56,13 +55,5 @@ def __extract_train_class__(soup: BeautifulSoup, number: str) -> dict:
             selector_class = "div > div > span.tab-radam"
             className = carriage.select_one(selector_class)
             if className:
-                name = className.get_text(strip=True)
-                result["formation"].append(name)
+                result.append(className.get_text(strip=True))
     return result
-
-
-soup = __request_vagonweb__(operator="ÖBB", category="CJX", number="1600")
-results = []
-results.append(__extract_train_class__(soup, number="1600"))
-# Output the sorted array
-print(results)
