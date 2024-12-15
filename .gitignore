@@ -176,3 +176,7 @@ cython_debug/
 OGDEXT_RASTER_1_STATISTIK_AUSTRIA_L000250_LAEA
 junctions*
 .DS_Store
+ArcGIS
+*.gdb
+Straßennetz/Wien
+Straßennetz/Niederosterreich
