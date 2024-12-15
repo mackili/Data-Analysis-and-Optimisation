@@ -1,0 +1,29 @@
+{
+  "from-to-arrival": {
+    "from": "str",
+    "departure": "datetime",
+    "to": "str",
+    "arrival": "datetime",
+    "trips": {
+      "tripid": {
+        "from": "str",
+        "to": "str",
+        "duration": "int",
+        "stop_count": "int",
+        "average_speed": "float",
+        "via": [
+          {
+            "from": "str",
+            "to": "str",
+            "duration": "int",
+            "distance": "int",
+            "speed": "float"
+          }
+        ]
+      }
+    },
+    "duration": "int",
+    "changeCount": "int",
+    "changesAt": [{ "station": "str", "duration": "int", "sequence": "int" }]
+  }
+}

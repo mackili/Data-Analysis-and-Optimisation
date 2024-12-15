@@ -230,19 +230,21 @@ def build_od_tuples(filepath) -> list[tuple[str, str]]:
     return [tuple(row) for row in file["ao_stop_id", "wo_stop_id"].to_numpy()]
 
 
+def build_json(route_df, dist_df):
+    return
+
+
 # =========================
 # Example Usage:
 # Just set these parameters and run the script.
 # =========================
 if __name__ == "__main__":
-    required_arrivel_times = ["07:20:00", "07:30:00", "07:40:00", "07:50:00"]
-    origin_destination_tuples = build_od_tuples("pendler/aggregate_pendler.csv")
-    origin = "at:43:3162"
-    destination = "at:49:1091"
-    required_arrival_time_str = "08:50:00"
-
+    origin = "at:49:1295"
+    destination = "at:49:288"
+    required_arrival_time_str = "07:20:00"
     route, route_df, dist_df = find_route_with_required_arrival(
         origin, destination, required_arrival_time_str
     )
+    print(route)
     route_df.to_csv("djkstra-gpt/GPT_route.csv")
     dist_df.to_csv("djkstra-gpt/GPT_dist.csv")

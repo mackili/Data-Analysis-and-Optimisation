@@ -180,3 +180,4 @@ ArcGIS
 *.gdb
 Straßennetz/Wien
 Straßennetz/Niederosterreich
+djkstra-gpt/results.json

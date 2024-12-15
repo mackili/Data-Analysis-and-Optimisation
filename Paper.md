@@ -317,7 +317,43 @@ In order to calculate amenities available for each commute to work, necessary ro
 | 8000              | 96           | 32                  |
 
 From this table bins were calculated for time necessary to arrive before 8 - the normal work and school start hour in Austria (**SOURCE**). The bins were: 10 minutes prior, 20 minutes prior, 30 minutes prior and 40 minutes prior. Values larger than these were removed due to unlikely nature of such commute.  
-Station to station times were then calculated using the method described and developed in https://github.com/amitrm/shortest-path-using-gtfs/tree/master. The script was modified to accomodate necessary restriction regarding arrival times (bins). The script imported filtered and simplified GTFS data from ÖBB and calculated shortest paths for each set of stations using the Djkstra algorithm. This allowed to retrieve data on distance and time of each commute between stations into a `djkstra_output.csv` file.
+Station to station times were then calculated using the method described and developed in https://github.com/amitrm/shortest-path-using-gtfs/tree/master. The script was modified to accomodate necessary restriction regarding arrival times (bins). The script imported filtered and simplified GTFS data from ÖBB and calculated shortest paths for each set of stations using the Djkstra algorithm. This allowed to save data on commute between each set of stations for each arrival time for the morning rush. Results were then saved as a `json` file structured in a following way:
+
+```json
+{
+  "from-to-arrival": {
+    "from": "str",
+    "departure": "datetime",
+    "to": "str",
+    "arrival": "datetime",
+    "trips": {
+      "tripid": {
+        "from": "str",
+        "to": "str",
+        "duration": "int",
+        "stop_count": "int",
+        "average_speed": "float",
+        "via": [
+          {
+            "from": "str",
+            "departure": "datetime",
+            "to": "str",
+            "arrival": "datetime",
+            "duration": "int",
+            "distance": "int",
+            "speed": "float"
+          }
+        ]
+      }
+    },
+    "duration": "int",
+    "changeCount": "int",
+    "changesAt": [{ "station": "str", "duration": "int", "sequence": "int" }]
+  }
+}
+```
+
+Such structure provided a way to calculate necessary routes once and contain all possibly necessary information for further calculations.
 
 TODO: Until 13.12
 
@@ -327,16 +363,132 @@ TODO: Until 13.12
 
 ### Amenities per station score
 
-TODO: Until 13.12
+Amenities at each station considered by the analysis (Vienna and Lower Austria only) were extracted using Python from Netex files available at https://data.oebb.at/de/datensaetze~netex-geodaten~.
 
 ### Route score
 
-Based on vagonweb - calculated per station.
-TODO: Until 16.12
+Data was webscraped from vagonweb.cz. From 3748 trips handled by ÖBB in Vienna and Lower Austria, the enthustiast-run database contained data on 2092 of them (55.8%). The route score for train compositions was calculated based on data available from ÖBB https://data.oebb.at/de/datensaetze~fahrzeuge-personenverkehr~. Trips were attributed with following:
+
+- CCTV
+- Wheelchair place
+- Bicycle place
+- Air Conditioning
+- WiFi
+- Low Floor
+- Year built
+
+Route attribute assignment procedure was conducted using Python script below. Each trip from GTFS feed was retrieved from `json` file from vagonweb.cz. Data on composition were then retrieved and checked against official dataset of ÖBB. If composition contained certain amenity in any of carriages, it was marked as true, otherwise a false value was given.
+
+```python
+import json
+import pandas as pd
+from collections import Counter
+from tqdm import tqdm
+
+path = "vagonweb/webscraping_result.json"
+gtfs_path = "GTFS_Simplified/trips.txt"
+def findGTFS() -> pd.DataFrame:
+    trips = pd.read_csv(gtfs_path)
+    trips["trip_short_name"] = trips["trip_short_name"].str.extract("(\d+)")
+    return trips[["trip_short_name", "trip_id", "route_id"]]
+
+
+def computeAttributes(data: dict) -> pd.DataFrame:
+    attribute_list = []
+    fahrzeuge = pd.read_csv("vagonweb/OBB Baureihen.csv")
+    gtfs = findGTFS()
+    for trip in tqdm(data, desc="Processing trips"):
+        composition = data.get(trip)
+        gtfs_trip_id = (
+            gtfs[gtfs["trip_short_name"] == trip]["trip_id"].values[0]
+            if not gtfs[gtfs["trip_short_name"] == trip].empty
+            else None
+        )
+        gtfs_route_id = (
+            gtfs[gtfs["trip_short_name"] == trip]["route_id"].values[0]
+            if not gtfs[gtfs["trip_short_name"] == trip].empty
+            else None
+        )
+        attr = {
+            "trip": trip,
+            "gtfs-trip-id": gtfs_trip_id,
+            "gtfs-route-id": gtfs_route_id,
+        }
+        for carriage in composition:
+            attr = {
+                "trip": trip,
+                "gtfs-trip-id": gtfs_trip_id,
+                "gtfs-route-id": gtfs_route_id,
+                "cctv": False,
+                "Wheelchair": False,
+                "Bicycle": False,
+                "ac": False,
+                "WiFi": False,
+                "LowFloor": False,
+                "Year": int,
+            }
+            attributes = fahrzeuge[fahrzeuge["Number"].isin([carriage])]
+            if len(attributes) < 1:
+                continue
+            attr["ac"] = (
+                True
+                if attributes["Klimatisierter Fahrgastinnenraum"].values[0] == "ja"
+                and ~attr["ac"]
+                else False
+            )
+            attr["Bicycle"] = (
+                True
+                if attributes["Fahrradplätze"].values[0] == "ja" and ~attr["Bicycle"]
+                else False
+            )
+            attr["cctv"] = (
+                True
+                if attributes["Videoüberwachung"].values[0] == "ja" and ~attr["cctv"]
+                else False
+            )
+            attr["LowFloor"] = (
+                True
+                if attributes["Niederflurzustieg"].values[0] == "ja"
+                and ~attr["LowFloor"]
+                else False
+            )
+            attr["Wheelchair"] = (
+                True
+                if attributes["Rollstuhlplätze"].values[0] == "ja"
+                and ~attr["Wheelchair"]
+                else False
+            )
+            attr["WiFi"] = (
+                True
+                if attributes["W-LAN"].values[0] == "ja" and ~attr["WiFi"]
+                else False
+            )
+
+        attribute_list.append(attr)
+    return pd.DataFrame(attribute_list)
+
+
+def main():
+    with open(path, "r") as file:
+        data = json.load(file)
+    # computeStatistics(data)
+    computeAttributes(data).to_csv("vagonweb/trip_attributes.csv")
+
+
+if __name__ == "__main__":
+    main()
+
+```
 
 #### Connection score
 
-TODO: Until 16.12
+Connection amenities were calculated based on all trips taken during a commute. They were then weighted based on travel duration on each train co create a score between 0 and 1, based on each trips' attributes. 0 meaning a complete lact of amenity during the travel and 1 meaning accessibility of amenity during the entire travel. Year built value was calculated as a weighted average and the rounded to a full year. If certain rolling stock data was not available for a connection, it was interpolated using an average score for all retrieved connections from vagonweb.cz. The average scores for all connections were:
+
+| CCTV | Wheelchair | Bicycle | AC   | WiFi | Low Floor |
+| ---- | ---------- | ------- | ---- | ---- | --------- |
+| 0.6  | 0.77       | 0.97    | 0.88 | 0.27 | 0.6       |
+
+Calculations were conducted using `Trip scoring/scoring.py` and `vagonweb/trip_score.py` Python scripts.
 
 #### Overal route score calculation
 
