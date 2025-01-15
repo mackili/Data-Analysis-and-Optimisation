@@ -2,6 +2,7 @@
 title: "Key Drivers of Attractiveness of Regional Rail for Commuters: Case Study of Vienna and Lower Austria"
 author: [Maciej Kilijański]
 date: "11.11.2024"
+csl: Bibliography/harvard-cite-them-right.csl
 bibliography: [Bibliography/ref.bib]
 citeproc: true
 output: pdf_document
@@ -16,28 +17,110 @@ With local governments of regions all around Europe strive to reduce emissions a
 
 The topic is extremely relevant as according to @eurostatPersonsEmploymentCommuting an average European spends 25 minutes commuting to work every workday. Spending almost an hour commuting everyday significantly influences quality of life of commuters [@hanEffectCommutingTime2022a]. Increasing popularity of railway, as a sustainable mode of transport, can bring our society closer to achieving climate neutrality in passenger transport. Rail transport also reduces traffic externalities, therefore improving citizens' life quality [@fagedaLightRailSystems2021a]. This relevance has brought many scientific writers to do research on the topic. Because of significant interest we now understand a lot of ways public transport planners can influence ridership via timetable changes [@asensioTransportModeChoice2002a; @heuermannEffectInfrastructureWorker2019a; @weliwitiyaBicycleTrainIntermodality2019a]. The effects of timetables are clearly visible in one of the regions of Poland, the Dolnośląskie voivodeship. The region has experienced the strongest growth of regional rail's passenger numbers in the country, despite having similar rolling stock to other regions in the country. It has been achieved largely with a sharp increase of the number of connections per day and establishing a minimum standard of 8 pairs of trains operated on each route. This has lead to 22.6% year-to-year increase in passengers transported between 2023 and 2024 [@kolejedolnoslaskieRekordowyStyczenKoleje2024].
 
-However, little to no research has been done regarding the influence of amenities present during such commute on percent of potential commuter demand utilized by railways. This is largely due to lack of official data on rolling stock used on railway connections. Such data is not provided by most of big european railway operators, including České Dráhy, Deutsche Bahn, PKP Intercity and Österreichische Bundesbahnen. This paper aims at establishing a framework for retrieving of such data from a community-based website Vagonweb.cz, and transformation of this data and connecting it to official data for timetable information (GTFS) and official data about railway infrastructure (NetEx).  
+However, little to no research has been done regarding the influence of amenities present during such commute on percent of potential commuter demand utilized by railways. This is largely due to lack of official data on rolling stock used on railway connections. Such data is not provided by most of big European railway operators, including České Dráhy, Deutsche Bahn, PKP Intercity and Österreichische Bundesbahnen. This paper aims at establishing a framework for retrieving of such data from a community-based website Vagonweb.cz, and transformation of this data and connecting it to official data for timetable information (GTFS) and official data about railway infrastructure (NetEx).  
 A retrieval and transformation process is then conducted for Vienna and Lower Austria region in Austria. Similar process can be repeated for most regions in Central Europe due to availability of necessary data on Vagonweb.cz and usage of industry data exchange standards: GTFS and NetEx.  
 The region was a convinient point for developing such framework thanks to an excelent work conducted by @brezinaPendelnOstregionPotenziale2015. Its authors conducted an analysis of commuter potential in the region using similar geospatial methods, but focused heavily on development of passenger potential of railway axis leading into the city of Vienna. Despite that, methods and techniques employed by @brezinaPendelnOstregionPotenziale2015 proved helpful in developing the framework and are heavily utilized in this paper.
 
-# Data gathering
+The paper uses only three computation tools: ArcGIS Pro for simple geospatial calcualtions, Python programming language for complex processing and Tableau Prep ETL tool for resource intensive dataset filtering and manipulation.
 
-The analysis of data [@bambrickWhatHotspotAnalysis2016]
+# Data gathering methodology
+
+The framework heavily relies on accessibility of geospatial data from official sources, as well as third-party data from community-based websites run by railway geeks around the world on providing data on rolling stock attributed to connections. In case of Vienna region and the entire Central Europe Vagonweb.cz provides one of the most comprehensive databases.
 
 ## NetEx
 
 The Network and Timetable Exchange (NetEx) is a standardized data format, sanctioned by European Union's standard EN 12896 as part of a so-called Transmodel. The Transmodel contains of various data exchange format like NetEx, Siri or OJP and aims at delivering seamless experience for intra and international public transport travel within Europe [@transmodelEN12896].
 
-The NetEx acts as part of the Transmodel and aims at sharing the topology, amenities and infrastructure features along the network. It is favorable to use due to its availability across countries.
-**Some stations were not present in the NetEx dataset `Wien Mitte`**
+The NetEx acts as part of the Transmodel and aims at sharing the topology, amenities and infrastructure features along the network. It is favorable to use due to its wide availability across countries. A map of all countries using NetEx as of 2024 can be seen in Figure 1 [@transmodelMap].
 
-TODO: Until 24.11
+![Countries involved in Transmodel Development and implementation. Source: Transmodel (2024)](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/NetEx Usage.png)
+
+Moreover, European Union's member countries are obligated to implement National Access Points to data for all formats present in the Transmodel, including NetEx, under European Delegated Regulation (EU) 2024/490 (MMTIS) [@europeanparliamentCommissionDelegatedRegulation2024]. This obligation makes it relevant for use in this paper as a base of a framework to use across countries.
 
 ### History
 
+The Transmodel as a whole can be traced back its origins to European Economic Community's DRIVE programme [@wrro2200]. The program aimed at aiding transport scheduling and operation with use of computers. Further generations of the data model have been developed over the years, fostered by European institutions, with NetEx emerging in the lates version of the data model - Transmodel 6.0 [@wiki:netex].
+
+As of 15^th^ of January 2025 following @wiki:netex2 NetEx has been already implemented by 17 countries. 16 of them in Europe, one foreign being Australia.
+
 ### Description of data model
 
+NetEx's data is provided to users in `xml` format. Depending on so-called NetEx flavor a country implementation uses, different categories of data can be accessed in the data model. A common core is however accessible in all current implementations. An overview based on @wiki:netex2 and @europeanparliamentCommissionDelegatedRegulation2024 can be seen in Table 1.
+
+| Level of service (LOS) | Static data                                  |
+| ---------------------- | -------------------------------------------- |
+| LOS 1-9                | Network topology and routes/lines (topology) |
+| LOS 1-10               | Transport operators                          |
+| LOS 1-11               | Timetables                                   |
+
+Table: Levels of service (LOS) accessible in all current implementations of NetEx.
+
+As this paper's primary concern is amenities accessible on railway network and in connections, the only LOS necessary to use is the LOS 1-9. It provides detailed shapes of the rail network, one can measure distances on, station and network junctions locations as well as availability of station amenities like platform clocks, bicycle parkings, WiFi, Park&Ride parkings.
+
+The 2024 NetEx provided by @oebbNetex contains this information in two files - one containing infrastructure information, the other information about stations specifically. A sample of such files can be seen in Appendix 1.
+
+Thanks to the data model being structured in `xml` it allows for creation of flavors in implementation by adding attributes to the data structure with ease. A feature not available so easily using another popular format - `json`.
+
 ### Model transformation
+
+Further processing of NetEx data in ArcGIS and Python for geospatial use requires transforming its `xml` format to one readeable by geospatial software. A format of choice in this paper was `geojson`, allowing for easy import and further manipulation. Transformation was conducted in Python using `xml.etree.ElementTree`, `geojson` and `json` packages available via the `pip install` command.
+
+Both files were first imported and parsed using `ET.fromstring()` command, then the procedure exported each of the nodes necessary for further analysis and parsed it's features into a `geojson` feature structure, a comparison of which on example of a station Kapellerfeld can be seen below.
+
+```xml
+<StopPlace version="any" created="2023-12-11T09:46:17.2376314+01:00" id="at-43-3852">
+    <ValidBetween>
+        <FromDate>2023-12-10T00:00:00</FromDate>
+        <ToDate>2024-12-07T00:00:00</ToDate>
+    </ValidBetween>
+    <keyList>
+        <KeyValue>
+            <Key>NETEX-ID</Key>
+            <Value>at-43-3852</Value>
+        </KeyValue>
+    </keyList>
+    <Name lang="de">Kapellerfeld</Name>
+    <ShortName>Gef H1</ShortName>
+    <Description/>
+    <PrivateCode>571</PrivateCode>
+    <Centroid>
+        <Location>
+            <Longitude>16.495168</Longitude>
+            <Latitude>48.31701</Latitude>
+        </Location>
+    </Centroid>
+    <TransportMode>rail</TransportMode>
+    <StopPlaceType>railStation</StopPlaceType>
+    </quays>
+</StopPlace>
+```
+
+Snippet 1: NetEx information in `xml` format
+
+```json
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [16.495168, 48.31701]
+  },
+  "properties": {
+    "name": "Kapellerfeld",
+    "description": null,
+    "key_values": {
+      "NETEX-ID": "at-43-3852"
+    }
+  }
+}
+```
+
+Snippet 2: NetEx information in `geojson` format
+
+Transforming this information not only made it more concise and readable, it also reduced it's size for junction and station files. After importing the transformed data into ArcGIS Pro, a map of the whole railway network in Austria could be constructed (Figure 2).
+
+![Map of Austrian rail network created in ArcGIS Pro using NetEx data. Source: Own work](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/NetEx Map.png)
+
+Full code snippet used for `xml` to `geojson` transformation is available in Appendix 2.
 
 ## GTFS
 
@@ -51,7 +134,7 @@ TODO: Until 30.11
 
 ## Vagonweb
 
-Collecting data about rolling stock assigned to certain connections is a notoriously hard task for public railway operators in Europe. There is no open data policy forced by any of the european regulators to publish such data. For the purpose of this study, the publically available information on each connection was not sufficient
+Collecting data about rolling stock assigned to certain connections is a notoriously hard task for public railway operators in Europe. There is no open data policy forced by any of the European regulators to publish such data. For the purpose of this study, the publically available information on each connection was not sufficient
 
 Timetables only provided information on accessibility for disabled people, WiFi, availability of the 1^st^ class, possibility to take bicycles onboard and low-floor carriages. No data on availaility of air conditioning onboard and the age of rolling stock were provided. These were however included in the scope of this study creating a need for alternative sourcing of data.
 
@@ -154,13 +237,13 @@ Such number of calculations turned out to be infeasible for ArcGIS Pro as the pr
 
 Then, each raster was assigned to a station based on the distance band it fell into. Rasters further than 8000 meters were excluded from the analysis. This filtering was conducted by intersecting rasters with 8km distance bands. The following method allowed to construct an origin-destination matrix for all 381 stations in Lower Austria and Vienna as destinations and x rasters within 8 km from a station. Due to low quality of data on road network in Lower Austria, the bands could not be calculated according to it and were calculated as Straight-line distances.
 
-![Final Raster Selection](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Paper.pdf)
+![Final Raster Selection](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/Selected Rasters.png)
 
 The rasters were attributed to stations using `geopandas` package in Python. The scale of necessary calculations showed to be impossible to execute in ArcGIS Pro.
 
-### Raster to station attribution process in python
+### Raster to station attribution process in Python
 
-Data exported from ArcGIS Pro as `shp` files was loaded to python using the `geopandas` package.
+Data exported from ArcGIS Pro as `shp` files was loaded to Python using the `geopandas` package.
 
 ```python
 import geopandas as gpd
@@ -259,7 +342,7 @@ TODO: Until 13.12
 
 ## Station to station passenger potential based on Pendler dataset
 
-Each raster was assigned a station based on a distance from it to a station. The shorter distance was assigned to a raster. In case of many stations being within the same distance band they were assigned randomly with uniform probability. Due to the size of the dataset multicore processing was utilized in python using the `multiprocessing` package. Final code used is available in the appendix.
+Each raster was assigned a station based on a distance from it to a station. The shorter distance was assigned to a raster. In case of many stations being within the same distance band they were assigned randomly with uniform probability. Due to the size of the dataset multicore processing was utilized in Python using the `multiprocessing` package. Final code used is available in the appendix.
 
 ```python
 import pandas as pd
@@ -528,5 +611,215 @@ Times of arrival at destination were attributed based on distances according to 
 This allowed to calculate number of people potentially commuting in each of the hours, based on 250m rasters and their distances to stations. Each time slot was assigned the sum of people that work or study within a raster assigned the destination station, laying within a set distance. This was conducted using Tableau Prep in 1 second of processing time, contrary to 4 hours of processing time forecasted by `tqdm` package in Python.
 
 TODO: Until 01.01.2025
+
+# Appendix
+
+## Appendix 1
+
+2024 NetEx file structure for infrastructure.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<PublicationDelivery xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:siri="http://www.siri.org.uk/siri" xmlns="http://www.netex.org.uk/netex" xsi:schemaLocation="http://www.netex.org.uk/netex http://netex.uk/netex/schema/1.10/xsd/NeTEx_publication.xsd" version="1.10">
+	<PublicationTimestamp>2022-09-08T06:17:31.8499236</PublicationTimestamp>
+	<ParticipantRef>GIP_OEBB</ParticipantRef>
+	<Description>OEBB InfrastructureLinks v-2022.0</Description>
+	<dataObjects>
+		<CompositeFrame version="001" responsibilitySetRef="OEBB Infrastruktur" id="nap:oebb:CompositeFrame:BS1">
+			<Name>OEBB Streckennetz</Name>
+			<codespaces>
+				<Codespace id="epip_data">
+					<Xmlns>nap:oebb</Xmlns>
+					<XmlnsUrl>http://netex-cen.eu/epip_data</XmlnsUrl>
+					<Description>EPIP data</Description>
+				</Codespace>
+			</codespaces>
+			<FrameDefaults>
+				<DefaultCodespaceRef ref="epip_data"/>
+				<DefaultLocationSystem>EPSG:4326</DefaultLocationSystem>
+			</FrameDefaults>
+			<frames>
+				<InfrastructureFrame id="nap:oebb:ServiceFrame:SL1:name" version="any">
+					<TypeOfFrameRef ref="epip:EU_PI_NETWORK"/>
+					<junctions>
+                        <RailwayJunction version="any" id="at-47-2184">
+							<Name lang="de">Kufstein</Name>
+							<Location>
+								<Longitude>12.165597</Longitude>
+								<Latitude>47.583376999999999</Latitude>
+							</Location>
+						</RailwayJunction>
+					</junctions>
+					<elements>
+                        <RailwayElement version="any" id="10101:at-43-3314+at-43-4651">
+							<Name/>
+							<gml:LineString gml:id="id-06893bc0-9bdb-4c30-bba8-025a2e0ffd17-0" srsName="LL-WGS84" srsDimension="2"><gml:posList>16.062011403000042 48.17851540800007 16.061832158000072 48.178456416000074 16.061831980000022 48.17845636700008 16.061523514000044 48.17837180200007 16.061522969000066 48.178371671000036 16.061197048000054 48.17829918100006 16.061193159000027 48.178298417000065 16.06087578100005 48.17824379100006 16.060872377000067 48.178243286000054 16.060541628000067 48.17820212300006 16.060540193000065 48.17820197700007 16.06021362100006 48.17817627900007 16.060212878000073 48.178176233000045 16.05987600000003 48.178164980000076 16.059874425000032 48.17816497200005 16.05948556100003 48.17817124700008 16.059484849000057 48.17817128200005 16.05914733000003 48.178192986000056 16.059144315000026 48.17819323600003 16.058820541000046 48.178226823000045 16.058817745000056 48.178227150000055 16.05849147200007 48.178270317000056 16.058490162000055 48.17827050100004 16.058169341000053 48.178319103000035 16.058168153000054 48.178319284000054 16.057848987000057 48.178371248000076 16.057848093000075 48.17837138600004 16.057520685000043 48.17842556800008 16.05752037800005 48.17842561100008 16.05687187500007 48.17853273500003 16.056856276000076 48.17853529700005 16.056444141000043 48.178603027000065 16.056226851000076 48.17863899100007 16.05592081100002 48.17868980500003 16.05556338100007 48.17874902300008 16.055217898000024 48.17880609700006 16.054920913000046 48.17885535600004 16.054644917000076 48.178901404000044 16.054280779000067 48.17896184600005 16.053951536000056 48.17901632200005 16.053950815000064 48.179016438000076 16.053619542000035 48.17907095100003 16.053296043000046 48.179124381000065 16.05297502700006 48.17917715900006 16.05263790400005 48.179232832000025 16.05232440800006 48.17928429700004 16.051996506000023 48.179338493000046 16.05168900500007 48.179389051000044 16.05168545600003 48.17938962900007 16.051365900000064 48.179441567000026 16.05136341700006 48.17944196700006 16.051036002000046 48.17949391600007 16.05103395900005 48.17949422500004 16.050703938000026 48.17954294800006 16.050703122000073 48.179543058000036 16.050351139000043 48.17958978200005 16.05034960200004 48.17958997100004 16.05002827900006 48.17962642800006 16.050025093000045 48.179626764000034 16.049689021000063 48.17965860500004 16.049685872000055 48.179658876000076 16.04936599900003 48.17968367700007 16.049363545000062 48.17968384200003 16.049003011000025 48.17970501000008 16.049002569000038 48.179705038000066 16.048674532000064 48.17971810100005 16.04867334900007 48.179718138000055 16.04832319700006 48.17972728700005 16.048321866000038 48.17972731000003 16.048089220000065 48.179730465000034 16.04808880300004 48.17973047500004 16.047944142000063 48.179731926000045 16.04794398100006 48.17973193000006 16.047743355000023 48.179733320000025 16.04774300500003 48.179733319000036 16.04706655900003 48.179736311000056 16.045332966000046 48.17974354000006 16.04499320700006 48.17974499400003 16.044240737000052 48.17974834700004 16.043681424000056 48.17975084700004 16.04348241300005 48.179751715000066 16.042923106000046 48.17975405800007 16.042816173000062 48.17975451600006 16.042277855000066 48.17975674500008 16.042256998000028 48.17975682600007 16.042218374000072 48.17975687100005 16.04205287600007 48.179757496000036 16.04149361700007 48.17975998400004 16.04128085600007 48.17976092600003 16.041280116000053 48.17976093400006 16.040711101000056 48.179763457000035 16.040710388000036 48.17976345500006 16.039283367000053 48.17976920600006 16.037264268000058 48.17977755000004 16.036937583000054 48.17977884700008 16.034222541000076 48.179789449000054 16.033549909000044 48.17979223800006 16.033547998000074 48.179792246000034 16.03253690400004 48.17979630900004 16.03173006700007 48.17979942200003</gml:posList></gml:LineString>
+							<FromPointRef ref="at-49-560"/>
+							<ToPointRef ref="at-49-1003"/>
+						</RailwayElement>
+					</elements>
+				</InfrastructureFrame>
+			</frames>
+		</CompositeFrame>
+	</dataObjects>
+</PublicationDelivery>
+```
+
+## Appendix 2
+
+Python code used for transforming NetEx from `xml` to `geojson` format.
+
+```python
+import xml.etree.ElementTree as ET
+import json
+from geojson import Point, Feature, FeatureCollection, LineString
+
+# Define file paths as string variables
+stations_input_path = "NetEx/ÖBB NetEx files/netex_oebb_StoppPlaces_20231211.xml"
+network_input_path = "NetEx/ÖBB NetEx files/netex_oebb_InfrastructureNetwork_20231211.xml"
+stops_output_path = "NetEx/ÖBB NetEx files/haltestellen.geojson"
+network_output_path = "NetEx/ÖBB NetEx files/network.geojson"
+
+
+def parse_stations_to_geojson(stations_input_path, stops_output_path):
+    # Load the Stations XML from the specified input file
+    with open(stations_input_path, "r", encoding="utf-8") as file:
+        stations_xml = file.read()
+
+    # Parse the XML
+    root = ET.fromstring(stations_xml)
+
+    # Extract Haltestellen (Stops)
+    stops = []
+    for stop in root.findall(".//{http://www.netex.org.uk/netex}StopPlace"):
+        name = stop.find("{http://www.netex.org.uk/netex}Name").text
+        description = stop.find("{http://www.netex.org.uk/netex}Description")
+        description_text = description.text if description is not None else ""
+        longitude = float(stop.find(".//{http://www.netex.org.uk/netex}Longitude").text)
+        latitude = float(stop.find(".//{http://www.netex.org.uk/netex}Latitude").text)
+
+        # Extract additional attributes from keyList if present
+        key_values = {}
+        for key_value in stop.findall(".//{http://www.netex.org.uk/netex}KeyValue"):
+            key = key_value.find("{http://www.netex.org.uk/netex}Key").text
+            value = key_value.find("{http://www.netex.org.uk/netex}Value").text
+            key_values[key] = value
+
+        # Add stop as GeoJSON feature with all attributes
+        point = Point((longitude, latitude))
+        feature = Feature(
+            geometry=point,
+            properties={
+                "name": name,
+                "description": description_text,
+                "key_values": key_values,
+            },
+        )
+        stops.append(feature)
+
+    # Create GeoJSON FeatureCollection for stops
+    stops_geojson = FeatureCollection(stops)
+
+    # Save to GeoJSON file (creates file if it doesn't exist)
+    with open(stops_output_path, "w", encoding="utf-8") as f:
+        json.dump(stops_geojson, f, indent=2)
+    print("GeoJSON file created for stations:", stops_output_path)
+
+
+def parse_network_to_geojson(network_input_path, network_output_path):
+    # Load the Infrastructure XML from the specified input file
+    with open(network_input_path, "r", encoding="utf-8") as file:
+        network_xml = file.read()
+
+    # Parse the XML
+    root = ET.fromstring(network_xml)
+
+    # Initialize lists to hold GeoJSON features
+    railway_junctions = []
+    railway_elements = []
+
+    # Extract `RailwayJunction` elements
+    for junction in root.findall(".//{http://www.netex.org.uk/netex}RailwayJunction"):
+        name = junction.find("{http://www.netex.org.uk/netex}Name").text
+        longitude = float(
+            junction.find(".//{http://www.netex.org.uk/netex}Longitude").text
+        )
+        latitude = float(
+            junction.find(".//{http://www.netex.org.uk/netex}Latitude").text
+        )
+        junction_id = junction.get("id")
+        version = junction.get("version")
+
+        # Create GeoJSON point feature
+        point = Point((longitude, latitude))
+        feature = Feature(
+            geometry=point,
+            properties={"id": junction_id, "version": version, "name": name},
+        )
+        railway_junctions.append(feature)
+
+    # Extract `RailwayElement` elements
+    for element in root.findall(".//{http://www.netex.org.uk/netex}RailwayElement"):
+        element_id = element.get("id")
+        version = element.get("version")
+        name = (
+            element.find("{http://www.netex.org.uk/netex}Name").text
+            if element.find("{http://www.netex.org.uk/netex}Name") is not None
+            else None
+        )
+        from_point_ref = element.find(
+            "{http://www.netex.org.uk/netex}FromPointRef"
+        ).get("ref")
+        to_point_ref = element.find("{http://www.netex.org.uk/netex}ToPointRef").get(
+            "ref"
+        )
+
+        # Parse the coordinates in `gml:posList`
+        pos_list = (
+            element.find(".//{http://www.opengis.net/gml/3.2}posList")
+            .text.strip()
+            .split()
+        )
+        coordinates = [
+            (float(pos_list[i]), float(pos_list[i + 1]))
+            for i in range(0, len(pos_list), 2)
+        ]
+
+        # Create GeoJSON LineString feature
+        line = LineString(coordinates)
+        feature = Feature(
+            geometry=line,
+            properties={
+                "id": element_id,
+                "version": version,
+                "name": name,
+                "from_point_ref": from_point_ref,
+                "to_point_ref": to_point_ref,
+            },
+        )
+        railway_elements.append(feature)
+
+    # Create GeoJSON FeatureCollections
+    junctions_geojson = FeatureCollection(railway_junctions)
+    elements_geojson = FeatureCollection(railway_elements)
+
+    # Save each to GeoJSON file
+    with open(
+        network_output_path.replace("network.geojson", "junctions.geojson"),
+        "w",
+        encoding="utf-8",
+    ) as f:
+        json.dump(junctions_geojson, f, indent=2)
+
+    with open(network_output_path, "w", encoding="utf-8") as f:
+        json.dump(elements_geojson, f, indent=2)
+
+    print("GeoJSON files created for railway junctions and elements.")
+
+
+# Usage
+parse_stations_to_geojson(stations_input_path, stops_output_path)
+parse_network_to_geojson(network_input_path, network_output_path)
+```
 
 # Bibliography
