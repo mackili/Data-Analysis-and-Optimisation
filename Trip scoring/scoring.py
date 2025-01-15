@@ -36,32 +36,32 @@ def main():
         else:
             attributes = {
                 "cctv": (
-                    AVERAGE_ATTR.get("cctv")
+                    AVERAGE_ATTR.get("cctv") * duration
                     if np.isnan(trip_attr["cctv"].values[0])
                     else (duration if trip_attr["cctv"].values[0] else 0)
                 ),
                 "Wheelchair": (
-                    AVERAGE_ATTR.get("Wheelchair")
+                    AVERAGE_ATTR.get("Wheelchair") * duration
                     if np.isnan(trip_attr["Wheelchair"].values[0])
                     else (duration if trip_attr["Wheelchair"].values[0] else 0)
                 ),
                 "Bicycle": (
-                    AVERAGE_ATTR.get("Bicycle")
+                    AVERAGE_ATTR.get("Bicycle") * duration
                     if np.isnan(trip_attr["Bicycle"].values[0])
                     else (duration if trip_attr["Bicycle"].values[0] else 0)
                 ),
                 "ac": (
-                    AVERAGE_ATTR.get("ac")
+                    AVERAGE_ATTR.get("ac") * duration
                     if np.isnan(trip_attr["ac"].values[0])
                     else (duration if trip_attr["ac"].values[0] else 0)
                 ),
                 "WiFi": (
-                    AVERAGE_ATTR.get("WiFi")
+                    AVERAGE_ATTR.get("WiFi") * duration
                     if np.isnan(trip_attr["WiFi"].values[0])
                     else (duration if trip_attr["WiFi"].values[0] else 0)
                 ),
                 "LowFloor": (
-                    AVERAGE_ATTR.get("LowFloor")
+                    AVERAGE_ATTR.get("LowFloor") * duration
                     if np.isnan(trip_attr["LowFloor"].values[0])
                     else (duration if trip_attr["LowFloor"].values[0] else 0)
                 ),

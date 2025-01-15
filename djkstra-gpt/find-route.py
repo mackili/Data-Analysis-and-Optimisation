@@ -239,9 +239,9 @@ def build_json(route_df, dist_df):
 # Just set these parameters and run the script.
 # =========================
 if __name__ == "__main__":
-    origin = "at:49:1295"
-    destination = "at:49:288"
-    required_arrival_time_str = "07:20:00"
+    origin = "at:43:7443"
+    destination = "at:43:7442"
+    required_arrival_time_str = "07:30:00"
     route, route_df, dist_df = find_route_with_required_arrival(
         origin, destination, required_arrival_time_str
     )

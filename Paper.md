@@ -7,15 +7,29 @@ citeproc: true
 output: pdf_document
 header-includes:
   - \usepackage{setspace}
+  - \linespread{1.5}
 ...
 
-\onehalfspacing
+# Introduction
+
+With local governments of regions all around Europe strive to reduce emissions and congestion caused by citizens' daily commutes, regional rail emerges as a potential solution to this problem. This paper provides a step-by-step guide to building a framework to analyze factors driving popularity of regional rail as a mode of transport people will choose for their daily commute.
+
+The topic is extremely relevant as according to @eurostatPersonsEmploymentCommuting an average European spends 25 minutes commuting to work every workday. Spending almost an hour commuting everyday significantly influences quality of life of commuters [@hanEffectCommutingTime2022a]. Increasing popularity of railway, as a sustainable mode of transport, can bring our society closer to achieving climate neutrality in passenger transport. Rail transport also reduces traffic externalities, therefore improving citizens' life quality [@fagedaLightRailSystems2021a]. This relevance has brought many scientific writers to do research on the topic. Because of significant interest we now understand a lot of ways public transport planners can influence ridership via timetable changes [@asensioTransportModeChoice2002a; @heuermannEffectInfrastructureWorker2019a; @weliwitiyaBicycleTrainIntermodality2019a]. The effects of timetables are clearly visible in one of the regions of Poland, the Dolnośląskie voivodeship. The region has experienced the strongest growth of regional rail's passenger numbers in the country, despite having similar rolling stock to other regions in the country. It has been achieved largely with a sharp increase of the number of connections per day and establishing a minimum standard of 8 pairs of trains operated on each route. This has lead to 22.6% year-to-year increase in passengers transported between 2023 and 2024 [@kolejedolnoslaskieRekordowyStyczenKoleje2024].
+
+However, little to no research has been done regarding the influence of amenities present during such commute on percent of potential commuter demand utilized by railways. This is largely due to lack of official data on rolling stock used on railway connections. Such data is not provided by most of big european railway operators, including České Dráhy, Deutsche Bahn, PKP Intercity and Österreichische Bundesbahnen. This paper aims at establishing a framework for retrieving of such data from a community-based website Vagonweb.cz, and transformation of this data and connecting it to official data for timetable information (GTFS) and official data about railway infrastructure (NetEx).  
+A retrieval and transformation process is then conducted for Vienna and Lower Austria region in Austria. Similar process can be repeated for most regions in Central Europe due to availability of necessary data on Vagonweb.cz and usage of industry data exchange standards: GTFS and NetEx.  
+The region was a convinient point for developing such framework thanks to an excelent work conducted by @brezinaPendelnOstregionPotenziale2015. Its authors conducted an analysis of commuter potential in the region using similar geospatial methods, but focused heavily on development of passenger potential of railway axis leading into the city of Vienna. Despite that, methods and techniques employed by @brezinaPendelnOstregionPotenziale2015 proved helpful in developing the framework and are heavily utilized in this paper.
 
 # Data gathering
 
 The analysis of data [@bambrickWhatHotspotAnalysis2016]
 
 ## NetEx
+
+The Network and Timetable Exchange (NetEx) is a standardized data format, sanctioned by European Union's standard EN 12896 as part of a so-called Transmodel. The Transmodel contains of various data exchange format like NetEx, Siri or OJP and aims at delivering seamless experience for intra and international public transport travel within Europe [@transmodelEN12896].
+
+The NetEx acts as part of the Transmodel and aims at sharing the topology, amenities and infrastructure features along the network. It is favorable to use due to its availability across countries.
+**Some stations were not present in the NetEx dataset `Wien Mitte`**
 
 TODO: Until 24.11
 
@@ -317,7 +331,7 @@ In order to calculate amenities available for each commute to work, necessary ro
 | 8000              | 96           | 32                  |
 
 From this table bins were calculated for time necessary to arrive before 8 - the normal work and school start hour in Austria (**SOURCE**). The bins were: 10 minutes prior, 20 minutes prior, 30 minutes prior and 40 minutes prior. Values larger than these were removed due to unlikely nature of such commute.  
-Station to station times were then calculated using the method described and developed in https://github.com/amitrm/shortest-path-using-gtfs/tree/master. The script was modified to accomodate necessary restriction regarding arrival times (bins). The script imported filtered and simplified GTFS data from ÖBB and calculated shortest paths for each set of stations using the Djkstra algorithm. This allowed to save data on commute between each set of stations for each arrival time for the morning rush. Results were then saved as a `json` file structured in a following way:
+Station to station times were then calculated using the method described and developed in @Github2018. The script was modified to accomodate necessary restriction regarding arrival times (bins). The script imported filtered and simplified GTFS data from ÖBB and calculated shortest paths for each set of stations using the Djkstra algorithm. This allowed to save data on commute between each set of stations for each arrival time for the morning rush. Results were then saved as a `json` file structured in a following way:
 
 ```json
 {
@@ -490,22 +504,29 @@ Connection amenities were calculated based on all trips taken during a commute. 
 
 Calculations were conducted using `Trip scoring/scoring.py` and `vagonweb/trip_score.py` Python scripts.
 
-#### Overal route score calculation
+# Analysis
 
-TODO: Until 16.12
+The data calculated was then used to identify areas with high potential for railway services in terms of passengers but are underserved in terms of timetable offering. Each connection, which was attributed in part **Route score** was assigned number of potential passengers. These were attributed based on their home station and target station, and connection they would need to take in order to make it on time (arriving at 07:20, 07:30, 07:40, or 07:50).  
+Stations were then assigned their connection attributes based on weighted average of connection attributes taken. Numbers of potential passengers per connection were considered as weights. Attributes of stations were assigned based on people leaving from station. Each time slot was calculated separately, allowing for both analysis of different commuter distances from destination stations and overall (weighted) analysis. Each station therefore was put in a following data model (example data):
 
-### Necessary switch
+| GTFS ID    | Station Name      | Time of arrival at destination | Potential passengers | CCTV | Wheelchair | Bicycle | AC   | WiFi | Low Floor |
+| ---------- | ----------------- | ------------------------------ | -------------------- | ---- | ---------- | ------- | ---- | ---- | --------- |
+| at:49:1349 | Wien Hauptbahnhof | 07:20                          | 1500                 | 0.6  | 0.77       | 0.97    | 0.88 | 0.27 | 0.6       |
 
-TODO: Until 19.12
+Times of arrival at destination were attributed based on distances according to (Peperna, 1982) presented by https://www.arbeiterkammer.at/infopool/wien/Verkehr_und_Infrastruktur_56.pdf. The function states, that only 10% to 30% of people will be willing to walk to their place of work for more than 500 meters if there is public transit available, with 0% to 10% willing to do so at 800m. Therefore only 500m distance was attributed according to walking time. The times of arrival present as follows:
 
-### Service frequency
+| Distance [meters] | Walking time | Public Transit Time | Preffered time of arrival |
+| ----------------- | ------------ | ------------------- | ------------------------- |
+| 500               | 6            | 2                   | 07:50                     |
+| 1000              | 12           | 4                   | 07:50                     |
+| 1500              | 18           | 6                   | 07:50                     |
+| 2000              | 24           | 8                   | 07:50                     |
+| 4000              | 48           | 18                  | 07:40                     |
+| 6000              | 72           | 24                  | 07:30                     |
+| 8000              | 96           | 32                  | 07:20                     |
 
-TODO: Until 19.12
-
-### Time of arrival to make it on time
-
-TODO: Until 19.12
-
-# Model outcomes
+This allowed to calculate number of people potentially commuting in each of the hours, based on 250m rasters and their distances to stations. Each time slot was assigned the sum of people that work or study within a raster assigned the destination station, laying within a set distance. This was conducted using Tableau Prep in 1 second of processing time, contrary to 4 hours of processing time forecasted by `tqdm` package in Python.
 
 TODO: Until 01.01.2025
+
+# Bibliography
