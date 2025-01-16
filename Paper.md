@@ -5,31 +5,37 @@ date: "11.11.2024"
 csl: Bibliography/harvard-cite-them-right.csl
 bibliography: [Bibliography/ref.bib]
 citeproc: true
+toc: true
+toc-depth: 2
+lof: true
+lot: true
 output: pdf_document
 header-includes:
   - \usepackage{setspace}
   - \linespread{1.5}
 ...
 
+<div style="page-break-after: always;"></div>
+
 # Introduction
 
-With local governments of regions all around Europe strive to reduce emissions and congestion caused by citizens' daily commutes, regional rail emerges as a potential solution to this problem. This paper provides a step-by-step guide to building a framework to analyze factors driving popularity of regional rail as a mode of transport people will choose for their daily commute.
+With local governments of regions all around Europe striving to reduce emissions and congestion caused by citizens' daily commutes, regional rail emerges as a potential solution to this problem. This paper provides a step-by-step guide to building a framework to analyze factors driving popularity of regional rail as a mode of transport people will choose for their daily commute.
 
-The topic is extremely relevant as according to @eurostatPersonsEmploymentCommuting an average European spends 25 minutes commuting to work every workday. Spending almost an hour commuting everyday significantly influences quality of life of commuters [@hanEffectCommutingTime2022a]. Increasing popularity of railway, as a sustainable mode of transport, can bring our society closer to achieving climate neutrality in passenger transport. Rail transport also reduces traffic externalities, therefore improving citizens' life quality [@fagedaLightRailSystems2021a]. This relevance has brought many scientific writers to do research on the topic. Because of significant interest we now understand a lot of ways public transport planners can influence ridership via timetable changes [@asensioTransportModeChoice2002a; @heuermannEffectInfrastructureWorker2019a; @weliwitiyaBicycleTrainIntermodality2019a]. The effects of timetables are clearly visible in one of the regions of Poland, the Dolnośląskie voivodeship. The region has experienced the strongest growth of regional rail's passenger numbers in the country, despite having similar rolling stock to other regions in the country. It has been achieved largely with a sharp increase of the number of connections per day and establishing a minimum standard of 8 pairs of trains operated on each route. This has lead to 22.6% year-to-year increase in passengers transported between 2023 and 2024 [@kolejedolnoslaskieRekordowyStyczenKoleje2024].
+The topic is extremely relevant, as according to @eurostatPersonsEmploymentCommuting an average European spends 25 minutes commuting to work every workday. Spending almost an hour commuting everyday significantly influences quality of life of commuters [@hanEffectCommutingTime2022a]. Increasing popularity of railway, as a sustainable mode of transport, can bring our society closer to achieving climate neutrality in passenger transport. Rail transport also reduces traffic externalities, therefore improving citizens' life quality [@fagedaLightRailSystems2021a]. This relevance has brought many scientific writers to do research on the topic. Because of significant interest we now understand a lot of ways public transport planners can influence ridership via timetable changes [@asensioTransportModeChoice2002a; @heuermannEffectInfrastructureWorker2019a; @weliwitiyaBicycleTrainIntermodality2019a]. The effects of timetables are clearly visible in one of the regions of Poland, the Dolnośląskie voivodeship. The region has experienced the strongest growth of regional rail's passenger numbers in the country, despite having similar rolling stock to other regions in the country. It has been achieved largely with a sharp increase of the number of connections per day and establishing a minimum standard of 8 pairs of trains operated on each route. This has lead to 22.6% year-to-year increase in passengers transported between 2023 and 2024 [@kolejedolnoslaskieRekordowyStyczenKoleje2024].
 
 However, little to no research has been done regarding the influence of amenities present during such commute on percent of potential commuter demand utilized by railways. This is largely due to lack of official data on rolling stock used on railway connections. Such data is not provided by most of big European railway operators, including České Dráhy, Deutsche Bahn, PKP Intercity and Österreichische Bundesbahnen. This paper aims at establishing a framework for retrieving of such data from a community-based website Vagonweb.cz, and transformation of this data and connecting it to official data for timetable information (GTFS) and official data about railway infrastructure (NetEx).  
-A retrieval and transformation process is then conducted for Vienna and Lower Austria region in Austria. Similar process can be repeated for most regions in Central Europe due to availability of necessary data on Vagonweb.cz and usage of industry data exchange standards: GTFS and NetEx.  
-The region was a convinient point for developing such framework thanks to an excelent work conducted by @brezinaPendelnOstregionPotenziale2015. Its authors conducted an analysis of commuter potential in the region using similar geospatial methods, but focused heavily on development of passenger potential of railway axis leading into the city of Vienna. Despite that, methods and techniques employed by @brezinaPendelnOstregionPotenziale2015 proved helpful in developing the framework and are heavily utilized in this paper.
+A retrieval and transformation process is then conducted for Vienna and Lower Austria region in Austria. Similar process can be repeated for most regions in Central Europe thanks to availability of necessary data on Vagonweb.cz and usage of industry data exchange standards: GTFS and NetEx.  
+The region was a convenient point for developing such framework thanks to an excelent work conducted by @brezinaPendelnOstregionPotenziale2015. Its authors conducted an analysis of commuter potential in the region using similar geospatial methods but focused heavily on development of passenger potential of railway axis leading into the city of Vienna. Despite that, methods and techniques employed by @brezinaPendelnOstregionPotenziale2015 proved helpful in developing the framework and are heavily utilized in this paper.
 
-The paper uses only three computation tools: ArcGIS Pro for simple geospatial calcualtions, Python programming language for complex processing and Tableau Prep ETL tool for resource intensive dataset filtering and manipulation.
+The paper uses three computation tools: ArcGIS Pro for simple geospatial calcualtions, Python programming language for complex processing and Tableau Prep ETL tool for resource intensive dataset filtering and manipulation.
 
-# Data gathering methodology
+# Data gathering
 
-The framework heavily relies on accessibility of geospatial data from official sources, as well as third-party data from community-based websites run by railway geeks around the world on providing data on rolling stock attributed to connections. In case of Vienna region and the entire Central Europe Vagonweb.cz provides one of the most comprehensive databases.
+The framework heavily relies on accessibility of geospatial data from official sources, as well as third-party data from community-based websites run by railway geeks around the world on providing data on rolling stock attributed to connections. In case of Vienna region and the entire Central Europe, the Vagonweb.cz provides one of the most comprehensive databases.
 
 ## NetEx
 
-The Network and Timetable Exchange (NetEx) is a standardized data format, sanctioned by European Union's standard EN 12896 as part of a so-called Transmodel. The Transmodel contains of various data exchange format like NetEx, Siri or OJP and aims at delivering seamless experience for intra and international public transport travel within Europe [@transmodelEN12896].
+The Network and Timetable Exchange (NetEx) is a standardized data format, sanctioned by European Union's standard EN 12896 as part of a so-called Transmodel. The Transmodel contains various data exchange formats like NetEx, Siri or OJP and aims at delivering seamless experience for intra and international public transport travel within Europe [@transmodelEN12896].
 
 The NetEx acts as part of the Transmodel and aims at sharing the topology, amenities and infrastructure features along the network. It is favorable to use due to its wide availability across countries. A map of all countries using NetEx as of 2024 can be seen in Figure 1 [@transmodelMap].
 
@@ -55,7 +61,7 @@ NetEx's data is provided to users in `xml` format. Depending on so-called NetEx 
 
 Table: Levels of service (LOS) accessible in all current implementations of NetEx.
 
-As this paper's primary concern is amenities accessible on railway network and in connections, the only LOS necessary to use is the LOS 1-9. It provides detailed shapes of the rail network, one can measure distances on, station and network junctions locations as well as availability of station amenities like platform clocks, bicycle parkings, WiFi, Park&Ride parkings.
+As this paper's primary concern are amenities accessible on railway network and in connections, the only LOS necessary to use is the LOS 1-9. It provides detailed shapes of the rail network, one can measure distances on, station and network junctions locations as well as availability of station amenities like platform clocks, bicycle parkings, WiFi, Park&Ride parkings.
 
 The 2024 NetEx provided by @oebbNetex contains this information in two files - one containing infrastructure information, the other information about stations specifically. A sample of such files can be seen in Appendix 1.
 
@@ -65,7 +71,7 @@ Thanks to the data model being structured in `xml` it allows for creation of fla
 
 Further processing of NetEx data in ArcGIS and Python for geospatial use requires transforming its `xml` format to one readeable by geospatial software. A format of choice in this paper was `geojson`, allowing for easy import and further manipulation. Transformation was conducted in Python using `xml.etree.ElementTree`, `geojson` and `json` packages available via the `pip install` command.
 
-Both files were first imported and parsed using `ET.fromstring()` command, then the procedure exported each of the nodes necessary for further analysis and parsed it's features into a `geojson` feature structure, a comparison of which on example of a station Kapellerfeld can be seen below.
+Both files were first imported and parsed using `ET.fromstring()` command, then the procedure exported each of the nodes necessary for further analysis and parsed its features into a `geojson` feature structure, a comparison of which can be seen below, on example of a station Kapellerfeld.
 
 ```xml
 <StopPlace version="any" created="2023-12-11T09:46:17.2376314+01:00" id="at-43-3852">
@@ -116,7 +122,7 @@ Snippet 1: NetEx information in `xml` format
 
 Snippet 2: NetEx information in `geojson` format
 
-Transforming this information not only made it more concise and readable, it also reduced it's size for junction and station files. After importing the transformed data into ArcGIS Pro, a map of the whole railway network in Austria could be constructed (Figure 2).
+Transforming this information not only made it more concise and readable, it also reduced its size for junction and station files. After importing the transformed data into ArcGIS Pro, a map of the whole railway network in Austria could be constructed (Figure 2).
 
 ![Map of Austrian rail network created in ArcGIS Pro using NetEx data. Source: Own work](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/NetEx Map.png)
 
@@ -134,17 +140,15 @@ TODO: Until 30.11
 
 ## Vagonweb
 
-Collecting data about rolling stock assigned to certain connections is a notoriously hard task for public railway operators in Europe. There is no open data policy forced by any of the European regulators to publish such data. For the purpose of this study, the publically available information on each connection was not sufficient
+Collecting data about rolling stock assigned to certain connections is a notoriously hard task for public railway operators in Europe. There is no open data policy forced by any of the European regulators to publish such data, leaving it optional for railway operators to publish any of such data. Most operators provide little to no information. The Austrian ÖBB allows for retrieval of limited data on rolling stock, such as possible classes of carriages or a restaurant on board, but without specific information like the age of rolling stock used. Such data can be retrieved using a specific website: live.oebb.at, but has limited capabilities for mass retrieval of data or webscraping due to use of a sophisticated user interface. For the purpose of this study, this publically available information on each connection was therefore not sufficient.
 
-Timetables only provided information on accessibility for disabled people, WiFi, availability of the 1^st^ class, possibility to take bicycles onboard and low-floor carriages. No data on availaility of air conditioning onboard and the age of rolling stock were provided. These were however included in the scope of this study creating a need for alternative sourcing of data.
+ÖBB's official timetables only provides information on accessibility for disabled people, WiFi, availability of the 1^st^ class, possibility to take bicycles onboard and low-floor carriages. No data on availaility of air conditioning onboard and the age of rolling stock is provided. These data in timetables were not accessible neither in any of the available NetEx files, nor in GTFS files available. These were however included in the scope of this study creating a need for alternative sourcing of data.
 
-With no official sources availabe this paper resorted to webscraping of the fan-made online forum created by railway enthusiasts - [vagonweb.cz](https://www.vagonweb.cz/).
-
-TODO: Description and history of vagonweb
+With no official sources availabe this paper resorted to webscraping of the community-based online forum created by railway enthusiasts - [vagonweb.cz](https://www.vagonweb.cz/). The website is constructed by Pavel Dvořák and maintained by a range of contributors, providing compositions of most (and in some cases all) trains running in Austria, Switzerland, Germany, Czechia, Slovakia, Poland, Hungary, Slovenia, Croatia, Servia, Bosnia and Hercegovina, North Macedonia, Bulgaria, Romania, Ukraine, Italu, France, Luxembourg, Belgium, Netherlands, Norway, Sweden, Finland, Greece, Albania and Turkey [@vagonweb]. The interface of the website was simple enough to employ classical webscraping techniques in order to retrieve train compositions of all trains operated in Vienna and Lower Austria. Train numbers were retrieved from GTFS data and filtered to include local trains operated in Vienna and Lower Austria only.
 
 ### Webscraping - methodology
 
-With lack of an official API supported by the website for downloading the data on rolling stock compositions this paper resorted to webscraping the data. The process was conducted in Python using packages described in Table 1.
+With lack of an official API supported by the website for downloading the data on rolling stock compositions this paper resorted to webscraping the data. The process was conducted in Python using packages described in Table 2.
 
 | Library          | Description                                                                                                                    |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
@@ -153,16 +157,36 @@ With lack of an official API supported by the website for downloading the data o
 | `BeautifulSoup`  | Used for parsing the data retrieved and retrieving the actual part of data necessary for the analysis from the html structure. |
 | `ssl`            | Used for ssl authentication to allow retrieving data using the https protocol.                                                 |
 
-Due to complexity of the webscraping operation, the code was then divided into two files: a controller and a performer. The controler file consisted of functions running locally, importing the list of all connections needing retrieval, controlling the pace of data querying and writing the data back locally. The performer file consisted of methods interacting with the website and processing the html content retrieved. Such setup made code debugging easier and followed code readablility best practices (**SOURCE NEEDED**).
+Table: Python libraries used for webscraping Vagonweb.cz
+
+Due to concerns about complexity and code readablility, the Python code is divided into two files, each containing several functions, each responsible for a part of work. The controler file employs its main function `scrape_and_update()`, that orchestrates the whole process, importing the list of all connections needing retrieval first, controlling the pace of data querying and writing the data back locally. The performer functions consisted of methods interacting with local data, the website, processing the html content retrieved and ultimately saving the data retrieved. All webscraping is executed by functions present in the webscraper file. The train numbers are loaded from `trips.txt` file, a part of GTFS data provided by a railway operator. Such setup made code debugging easier and followed code readablility best practices [@parlantePythonReadablility].
+
+Precise steps to follow for data retrieval are described in following subchapters. Full Python code for retrieval is available in Appendix 3.
+
+### Standardizing train categories
+
+As train compositions stored in Vagonweb.cz are categorized by operational categories of trains operated, the first step conducted by the orchestration function after loading all train numbers from GTFS standarization of categories is necessary. As the website does not provide differentiation between S-Bahn and Regional trains in Vienna and Lower Austria region.
+
+```python
+def standardize_category(category: str) -> str:
+        if category == "S":
+            return "R"
+        else:
+            return category
+```
+
+That standarization is achieved using the `standardize_category()` category function, which replaces all S-Bahn train numbers to their Regional train numbers. Then it is time to scrape the data from the website.
 
 ### Creating request URL
 
-The `create_request` method creates a unique request URL for each of the train connections needing retrieval. It takes website's base URL of `https://www.vagonweb.cz/razeni/vlak.php?` and appends necessary information to it. Then a parsed string is returned. The information allowing to retrieve each train were:
+A first step of which is creating a request URL, specific for the train considered.
 
-- Operator - ÖBB for the case of Lower Austria and Vienna (**SOURCE NEEDED**)
-- Category - S for S-Bahn, R for Regio and REX for Regional Expressess. Other categories like CAT (City Airport Train) or long distance D-Zuge, Euro/Inter-City and RailJets were not considered as the scope of this study only includes regional, commuter trains.
+The `create_request` function creates a unique request URL for each of the train connections needing retrieval. It takes website's base URL of `https://www.vagonweb.cz/razeni/vlak.php?` and appends necessary information to it. Then a parsed string is returned. The information allowing to retrieve each train were:
+
+- Operator - ÖBB for the case of Lower Austria and Vienna (according to GTFS data)
+- Category - S for S-Bahn, R for Regio and REX for Regional Expressess. Other categories like CAT (City Airport Train) or long distance D-Zuge, Euro/Inter-City and RailJets are not considered as the scope of this study only includes regional, commuter trains.
 - Number - train number
-- Year - year of the timetable.
+- Year - year of the timetable (2024 for this paper)
 
 ```python
 def create_request(operator: str, category: str, number: str, year=2024) -> str:
@@ -178,13 +202,73 @@ def create_request(operator: str, category: str, number: str, year=2024) -> str:
     return url
 ```
 
-###
+### Sending a request
 
-TODO: Until 06.12
+Having successfully created a request URL, it is now time to send it to the website. Use of the `SSL` package is necessary to create a safe connection between Python and the website. The package signs the request using a so-called Secure Sockets Layer protocol, allowing the code to make a secure https connection [@ssl]. Headers are then added to enact a request made by a normal browser and prohibit the website to block the request.
 
-### Description & Problem
+```python
+def __request_vagonweb__(
+    operator: str, category: str, number: str, year=2024
+) -> BeautifulSoup:
+    url = create_request(operator=operator, category=category, number=number, year=year)
+    context = ssl._create_unverified_context()
+    req = Request(url)
+    req.add_header(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    )
+    req.add_header("Connection", "keep-alive")
 
-### Webscraping: Code and performance
+    try:
+        response = urlopen(req, context=context)
+        html_bytes = response.read()
+        html_content = html_bytes.decode("utf-8")  # Decode bytes to string
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        exit()
+    return BeautifulSoup(html_content, "html.parser")
+```
+
+A try/except block allows to catch possible errors and inform a user excecuting the request what went wrong. Finally the received website body is decoded and returned for further processing as a `BeautifulSoup`.
+
+### Retrieving meaningful data
+
+Having retrieved the rendered website, Python code further employs the `BeautifulSoup` package to find an html element `table` within the retrieved website. The table containing information on train composition is marked with a class `vlacek` for the website.
+
+```python
+def __extract_train_class__(soup: BeautifulSoup) -> list:
+    result = []
+    vlacek_table = soup.find("table", class_="vlacek")
+
+    if vlacek_table:
+        # Use CSS selector to find the desired span element
+        selector_carriages = "tr > td.bunka_vozu"
+        carriages = vlacek_table.select(selector_carriages)
+        for carriage in carriages:
+            selector_class = "div > div > span.tab-radam"
+            className = carriage.select_one(selector_class)
+            if className:
+                result.append(className.get_text(strip=True))
+    return result
+```
+
+The table rows (carriages) are then extracted. If a train composes of multiple carriages, the results are stored as a Python list. The final format of retrieved data for a single train can be seen below. A dictionary with train number as key and a list of rolling stock a train is composed of is formatted by the Python script.
+
+```json
+{
+  "3633": ["1144", "Bmpz-l", "Bmpz-l", "Bmpz-l", "Bmpz-s"]
+}
+```
+
+Such structure ensures uniqueness of each composition and ensures easy filtering of the dataset later on.
+
+### Performance
+
+Webscraper's performance was limited with threshholds of the website. Randomly distributed breaks between 0 and 360 milliseconds are done using Python's `time` package to protect against getting marked as a distributed denial-of-service (DDoS) attack [@ddos]. Figure 3 displays time of retrieval for each request made by the code.
+
+![Retrieval time of train compositions](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/Vw Retrieval time.png)
+
+Despite an initial spike almost reaching 90 seconds per request, an overall retrieval time for all 3748 trains was just under 130 minutes, making an average of around 2 seconds per request - a performance comparable to loading a website directly in a browser. Such timing outpaces manual collection of necessary data from the website to desired data structure, proving value of the code provided.
 
 ## Pendler Dataset
 
@@ -206,24 +290,25 @@ The road network was constructed without use of elevation. Three modes of transp
 - Cycling
 - Walking
 
-# Model calculation
+# Model description
 
-The model considered in this paper will was calculated as following. In order to measure attractiveness of physical infrastructure
-for each of the 250m rasters, each raster was first assigned the nearest station based on proximity to their central feature.
-Then the bi-directional passenger potentials were calculated for each combination of stations based on the assignment made. Thanks to the availability of GTFS transit data, these potentials were attributed to sets of morning and afternoon connections using a bi-directional network.
+The model considered in this paper is calculated as following. In order to measure attractiveness of commutes
+for each of the 250m rasters, each raster is first assigned the nearest station based on proximity to their centroid.
+Then the bi-directional passenger potentials are calculated for each combination of stations based on the assignment made. Thanks to the availability of GTFS transit data, these potentials were attributed to sets of morning commute connections using a bi-directional network and a modified Djkstra algorithm.
 
-Each potential record was also assigned the amenities offered on both stations and rolling stock. This allowed for a _route score_ calculation. The route score was then backfitted with data about potentially necessary train changes and additional time necessary for it. Moreover, each connection was assigned a service frequency score. The last factor accounted for was the time of arrival at the destination station. Following paragraphs provide a detailed description of the calculation process.
+Each potential commute is then assigned the amenities offered by rolling stock used. Data about necessary train changes and additional time necessary for it is also attributed along with average speed and duration of each potential commute. The last factor noted for is the time of arrival at the destination station. Following paragraphs provide a detailed description of the calculations.
 
 ## Distance raster to station
 
-In order to assign stations to rasters, each raster had a centroid calculated, from which distance was measured to a station. The centroid calculation was conducted using the Point tool, according to Esri's documentation (https://pro.arcgis.com/en/pro-app/latest/help/editing/create-point-and-multipoint-features.htm). The raster dataset was retrieved from Statistik Austria and filtered by location to only include rasters that intersect communities within Lower Austria and Vienna (https://www.data.gv.at/katalog/dataset/566c99be-b436-365e-af4f-27be6c536358). Filtering was conducted using Gemeinde Ids. This allowed the Raster dataset to shrink from over a million rows to 316317. The facility assignment tool of the Network Analyst toolbox in ArcGIS Pro requires points as features to assign, hence a centroid of each raster was calculated. For this the Feature to Point tool of ArcGIS Pro was used (https://support.esri.com/en-us/knowledge-base/how-to-find-the-centroid-of-polygons-using-calculate-ge-000021849). Assignment of each raster centroid to the nearest station was conducted using the road network for Vienna and Lower Austria and Network Analyst tool in ArcGIS Pro. The size of the dataset was posing a problem:
+In order to assign stations to rasters, each raster has a centroid calculated, from which distance is measured to all stations in the dataset. The centroid calculation is conducted using the Point tool, according to ESRI's documentation for ArcGIS Pro [@centroidEsri]. In case of this paper the rasters dataset is retrieved from Austrian Statistical Office (Statistik Austria) and filtered by location to only include rasters that intersect communities within Lower Austria and Vienna [@statistikRasters]. Filtering is conducted using a spacial join. ArcGIS Pro allows to select based on location, therefore each raster touching any within the region. The filtering allowes the number of mobility rasters in dataset to shrink, in case of this paper from over a million rows to 316317.
+
+Originally the assignment of each raster centroid to the nearest station was supposed to be conducted using the road network for Vienna and Lower Austria and the Network Analyst tool available in ArcGIS Pro. The size of the dataset however posed a problem:
 
 - 381 stations (_Facilities_)
 - 316.317 rasters (_Incidents_)
 
-Giving $381\cdot316.317=120.516.777$ possible combinations.
-
-Such number of calculations turned out to be infeasible for ArcGIS Pro as the problem would not even construct. Therefore, heuristics became a necessity. Following the example of previous analysis (https://www.arbeiterkammer.at/infopool/wien/Verkehr_und_Infrastruktur_56.pdf), each station was assigned a distance band along the road network. The distance bands were weighted, which later allowed to assign points for closeness of a station. Still following the reasoning of (https://www.arbeiterkammer.at/infopool/wien/Verkehr_und_Infrastruktur_56.pdf), the distance bands calculated for each station were:
+Giving $381\cdot316.317=120.516.777$ possible combinations.  
+Such number of calculations turned out to be infeasible for ArcGIS Pro as the problem would not construct, let alone execute. Therefore, heuristics became a necessity. Following the example of @brezinaPendelnOstregionPotenziale2015, each station within Vienna city limits is assigned a distance band along the road network. Stations outside of Vienna city limits are assigned distance bands based on a circle being drawn around them, radius of which demarked a distance band. Following the reasoning of @brezinaPendelnOstregionPotenziale2015 further, the distance bands calculated for each station are:
 
 - 500 meters
 - 1000 meters
@@ -235,33 +320,11 @@ Such number of calculations turned out to be infeasible for ArcGIS Pro as the pr
 
 ![Distance bands around stations](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/DistanceBands.png)
 
-Then, each raster was assigned to a station based on the distance band it fell into. Rasters further than 8000 meters were excluded from the analysis. This filtering was conducted by intersecting rasters with 8km distance bands. The following method allowed to construct an origin-destination matrix for all 381 stations in Lower Austria and Vienna as destinations and x rasters within 8 km from a station. Due to low quality of data on road network in Lower Austria, the bands could not be calculated according to it and were calculated as Straight-line distances.
-
-![Final Raster Selection](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/Selected Rasters.png)
-
-The rasters were attributed to stations using `geopandas` package in Python. The scale of necessary calculations showed to be impossible to execute in ArcGIS Pro.
+Final outcome of the distance band calculation can be seen in Figure 4. Distance bands are there exported from ArcGIS Pro as `shp` files and are further processed in Python using the `geopandas` package.
 
 ### Raster to station attribution process in Python
 
-Data exported from ArcGIS Pro as `shp` files was loaded to Python using the `geopandas` package.
-
-```python
-import geopandas as gpd
-raster_points_Wien = gpd.read_file(
-    "ArcGIS/RasterPointsWien_ExportFeatures.shp"
-)
-raster_points_NO = gpd.read_file(
-    "ArcGIS/RasterPointsNO.shp"
-)
-distance_bands_Wien = gpd.read_file(
-    "ArcGIS/DistanceAreasWien.shp"
-)
-distance_bands_NO = gpd.read_file(
-    "ArcGIS/Stops_MultipleRingBuffer_ExportFeatures.shp"
-)
-```
-
-In order to execute a spacial join operation correctly, all geometries were transformed to use one referencing system
+To ensure correct processing all geometries must be transformed to the same coordinate reference system (crs). A dominant `shp` file is chosen and all other geometries are converted to its crs.
 
 ```python
 distance_bands_Wien = distance_bands_Wien.to_crs(raster_points_Wien.crs)
@@ -269,14 +332,14 @@ raster_points_NO = raster_points_NO.to_crs(raster_points_Wien.crs)
 distance_bands_NO = distance_bands_NO.to_crs(raster_points_Wien.crs)
 ```
 
-As stations in Vienna were considered separately, due to better quality of road network data, spatial join operations were conducted separately for Vienna and Lower Austria.
+All rasters are then spatially joined to the distance bands around the stations, allowing for subsequent calculation of a distance matrix.
 
 ```python
 raster_join_wien = raster_points_Wien.sjoin(distance_bands_Wien, how="left")
 raster_join_no = raster_points_NO.sjoin(distance_bands_NO, how="left")
 ```
 
-With joins ready, the data was transformed into lists of dictionaries for Vienna and Lower Austria and then merged. All lists were transformed into pandas dataframes and saved as `csv` files for further processing.
+With spatial joins performed a distance matrix can be calculated. In case of this paper the distance matrix for Vienna was calculated separately and later merged with distance matrix for Lower Austria due to different geometries of the distance bands around stations. This does not have to be the case when analyzing other regions. The code extracts station code and range of the distance band for each band. Naming structure of the distance bands is determined by ArcGIS Pro as a tool used for distance band calculation. Further, a matrix is calculated as a list of Python dictionaries containing all distance bands a raster centroid is located within.
 
 ```python
 def DistanceMatrixVienna(
@@ -297,29 +360,13 @@ def DistanceMatrixVienna(
     ]
 
     return matrix
+```
 
+![Final Raster Selection](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/Maps/Selected Rasters.png)
 
-def DistanceMatrixLowerAustria(rasters=raster_join_no, stations=None) -> list:
-    # Filter out rows where 'distance' is NaN
-    rasters = rasters.dropna(subset=["distance"])
+In case of this paper, the lists for Lower Austria and for Vienna had to be merged together as a `pandas` data frame. The results (Figure 5) are then saved as a conventional distance matrix in a `csv` file.
 
-    # Group by 'gid' and construct dictionaries for each group
-    matrix = [
-        {"gid": gid, **dict(zip(group["GStopID"], group["distance"]))}
-        for gid, group in rasters.groupby("gid")
-    ]
-
-    return matrix
-
-
-dist_vienna = DistanceMatrixVienna()
-dist_lower_austria = DistanceMatrixLowerAustria()
-OD_Vienna = pd.DataFrame(dist_vienna)
-OD_Vienna.to_csv("Straßennetz/WienMatrix.csv")
-OD_LoverAustria = pd.DataFrame(dist_lower_austria)
-OD_LoverAustria.to_csv("Straßennetz/NOMatrix.csv")
-
-
+```python
 def MergeLists(base=dist_lower_austria, to_merge=dist_vienna, key="gid"):
     # Create a dictionary to hold the merged results
     # Convert lists of dictionaries into DataFrames
@@ -338,70 +385,49 @@ OD_All = pd.DataFrame(MergeLists())
 OD_All.to_csv("Straßennetz/GrossraumWienMatrix.csv")
 ```
 
-TODO: Until 13.12
+Full Python code for distance matrix calculation is available in Appendix 4.
+
+The station assignment was then conducted using code available in Appendix 5. The code analyzed the distance matrix and selected the closest station to each of the rasters. If several stations were within the same distance band, the one with a lower Id derived from NetEx was chosen. A large scale of the distance matrix (120516777 possible combinations) demanded the use of multicore processing using the `multiprocessing` package in Python.
+
+Thanks to no use of loops and multicore processing the whole calculation executed in 12.4 seconds for all 197.820 rows. The assigned station assignment was then used to aggregate station-to-station passenger flows.
 
 ## Station to station passenger potential based on Pendler dataset
 
-Each raster was assigned a station based on a distance from it to a station. The shorter distance was assigned to a raster. In case of many stations being within the same distance band they were assigned randomly with uniform probability. Due to the size of the dataset multicore processing was utilized in Python using the `multiprocessing` package. Final code used is available in the appendix.
-
-```python
-import pandas as pd
-from multiprocessing import Pool, cpu_count
-from datetime import datetime
-
-with_station_path = "Straßennetz/WithStation.csv"
-
-
-def process_row(row) -> dict[str, str, int]:
-    clean_row = row.drop("gid").dropna()
-    lowest = clean_row.idxmin()
-    return {
-        "raster": row["gid"],
-        "stop_id": lowest,
-        "distance": clean_row[lowest],
-        "finished_at": datetime.now(),
-    }
-
-
-def main() -> pd.DataFrame:
-    matrix = pd.read_csv(with_station_path, index_col=0)
-
-    rows = [row for _, row in matrix.iterrows()]
-    num_cores = cpu_count() - 2
-    start = datetime.now()
-    print(f"Started at {start}")
-    with Pool(num_cores) as pool:
-        assignments = pool.map(process_row, rows)
-
-    end = datetime.now()
-    print(f"Executed {len(rows)} in {end-start}.")
-    return pd.DataFrame(assignments)
-
-
-if __name__ == "__main__":
-    main().to_csv("Straßennetz/StationAssignment.csv")
-```
-
-Thanks to no use of loops and multicore processing the whole calculation executed in 12.4 seconds for 197.820 rows. The assigned station assignment was then used to aggregate station-to-station passenger flows. Each station had a sum departing and arriving passengers calculated. These sums were calculated in the same form as in the Pendler dataset from Statistik Austria, meaning a total of commuters, work commuters and school commuters. The formula for calculation was:
-$$\sum_{r\in R} passengers_{r}$$
+Each station had a sum departing and arriving passengers calculated. These sums were calculated in the same form as in the Pendler dataset from Statistik Austria, keeping the division into total number of commuters, work commuters and school commuters. The formula for calculation of commuter potential of between each set of stations can be summarized as:
+$$\sum_{r\in R} passengers_{r}, \forall o \in O, \forall d \in D$$
 $$\text{Where } r\text{ represents a raster in Rasters } R$$
+$$\text{Where } o\text{ represents an origin station in } O$$
+$$\text{Where } d\text{ represents a destination station in } D$$
 
-The aggregation was conducted in Tableau Prep, due to large scale of calculations needed. An ETL tool handled necessary work in very low time, while testing in Python proved to be challenging for the tool. At this point a graphical representation of results was possible to present. This was presented in Tableau.
+The aggregation was conducted in Tableau Prep, due to large scale of calculations needed. The ETL tool handled necessary work in very low time, while testing in Python proved to be challenging for the programming language. At this point a graphical representation of results was possible to present. The visuals were generated using Tableau Desktop business inteligent software.
+
+### Commuter balance - initial findings from station to station passenger potential
 
 ![Commuter Balance Map](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/pendler/Commuter Balance Map.png)
 
-Figure above displays a map of commuter balances for stations in Vienna and Lower Austria. Size of the dot demarks total number of commuters that could potentially utilize the station, both leaving from it (from their place of residence) and arriving at it (to their place of work/study). Color denotes the balance between commuters leaving from and arriving to a station. Three categories were selected: red denotes negative commuter balance (more people leaving than arriving), yellow denotes close to equal yet positive commuter balance and green a strongly positive commuter balance.  
-What turns attention quickly is the concentration of strongly positive stations in Vienna city center (with the exception of Wien Hauptbahnhof). Outside of Vienna only 14 stations had a strong positive balance: St. Pölten Hauptbahhof, Krems, Tulln, Katzelsdorf, St. Pölten Bildungscampus, Hollabrunn, Amstetten, Brunn-Maria Enzendorf, Achau, Horn, Gunstramsdorf Thallern, Korneuburg, Wieselburg, Fischamend.
+Figure 6 displays a map of commuter balances for stations in Vienna and Lower Austria. This paper calls commuter balance a difference between number of commuters leaving for work and arriving to work at the station. A negative balance implicates more commuter potential in people departing from the station for their morning commute. Three categories of commuter balance were selected: red denotes negative commuter balance (more people leaving than arriving), yellow denotes close to equal yet positive commuter balance and green a strongly positive commuter balance. Size of each point demarks total number of commuters that could potentially utilize the station, both leaving from it (from their place of residence) and arriving at it (to their place of work/study).
+
+What turns attention quickly is the concentration of strongly positive stations in Vienna city center (with the exception of Wien Hauptbahnhof). Outside of Vienna only 14 stations had a strong positive balance: St. Pölten Hauptbahhof, Krems, Tulln, Katzelsdorf, St. Pölten Bildungscampus, Hollabrunn, Amstetten, Brunn-Maria Enzendorf, Achau, Horn, Gunstramsdorf Thallern, Korneuburg, Wieselburg, Fischamend, as seen in Figure 7.
 
 ![Biggest potential stations excluding Vienna](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/pendler/Busiest Stations without Vienna.png)
 
-Including Vienna the station potential diagram becomes dominated by the metropoly. 6 biggest potential stations are in Vienna, followed by Brunn-Maria-Enzersdorf (close to Vienna), which is then followed by another 8 stations in Vienna. This is visible in Figure x.
+Including Vienna the station potential diagram becomes dominated by the metropoly. 6 biggest potential stations are in Vienna, followed by Brunn-Maria-Enzersdorf (close to Vienna), which is then followed by another 8 stations in Vienna. This is visible in Figure 8.
 
 ![Biggest potential stations including Vienna](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/pendler/Busiest Stations.png)
 
-In order to calculate amenities available for each commute to work, necessary routings were calculated. As rasters do differ in proximity to stations, this paper once again takes inspiration from https://www.arbeiterkammer.at/infopool/wien/Verkehr_und_Infrastruktur_56.pdf and calculates necessary commutes for both SLOW and MIV modes of transport. This time we took into consideration walking time calculated with data from https://doi.org/10.1016/j.sbspro.2012.12.237. The average walking pace was 1.4 meters per second, which translates to 5 km/h. Moreover, considering Figure 6, 65% of all commuters arrive in Vienna, therefore in order to calculate the MIV transit option for the average speed of Vienese trams was taken into account. This was measured to be 15.44 km/h (https://repositum.tuwien.at/bitstream/20.500.12708/193238/1/Steinwidder%20Paul%20-%202024%20-%20Bewertungsverfahren%20zur%20Analyse%20der...pdf). The time to final destination was calculated for each of the distance bands, then rounded up to a full minute:
+Drawing on Figures 7 and 8, a fascinating statistic can be seen in Figure 9. 65% of all commuters in the region commute with a destination at a attributed to a station within Vienna's city limits. The disproportion towards the number of commuters who's target is elsewhere is significant. This proves the metropolitan position the city has within the neighbouring region and poses a set of potential challanges for infrastructure and railway operators with uneven demand in both directions.
 
 ![Commuters arriving in Vienna vs. outside of Vienna](/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/pendler/Arrivals Vienna vs. Rest.png)
+
+## Commuter to connection assignment
+
+In order to calculate amenities available for each commute to work, routings for commuters must be calculated. As rasters differ in proximity to stations, this paper once again takes inspiration from @brezinaPendelnOstregionPotenziale2015 and calculates necessary commutes for both two modes of transport.
+
+@brezinaPendelnOstregionPotenziale2015 differentiate modes of transport into SLOW and MIV. For purpose of this paper, these modes are attributed to walking for SLOW and public transit for MIV. This makes logical sense as commuters arriving by public transport to their destinations do not have access to a motorized mode of transport other than public transport.
+
+For walking, a time necessary to cover a distance is calculated with according to measurements conducted by @azmiComparingWalkingBehaviour2012. With the average walking pace equal 1.4 meters per second, which translates to 5 km/h.
+
+With 65% of all commuters in Vienna and Lower Austria arriving daily in Vienna (Figure 9), the MIV average speed must consider the average speed of the local public transport. @steinwidderEvaluationMethodAnalysis2023 provides a recent measurement of such equal to 15.44 km/h. The time necessary to cover the distance in each distance band is then calculated for both modes of transport and rounded up to a full minutes (Table 3).
 
 | Distance [meters] | Walking time | Public Transit Time |
 | ----------------- | ------------ | ------------------- |
@@ -413,8 +439,15 @@ In order to calculate amenities available for each commute to work, necessary ro
 | 6000              | 72           | 24                  |
 | 8000              | 96           | 32                  |
 
-From this table bins were calculated for time necessary to arrive before 8 - the normal work and school start hour in Austria (**SOURCE**). The bins were: 10 minutes prior, 20 minutes prior, 30 minutes prior and 40 minutes prior. Values larger than these were removed due to unlikely nature of such commute.  
-Station to station times were then calculated using the method described and developed in @Github2018. The script was modified to accomodate necessary restriction regarding arrival times (bins). The script imported filtered and simplified GTFS data from ÖBB and calculated shortest paths for each set of stations using the Djkstra algorithm. This allowed to save data on commute between each set of stations for each arrival time for the morning rush. Results were then saved as a `json` file structured in a following way:
+Table: Distance vs. time needed to cover it using walking and public transport in Vienna
+
+Four time slots of arrival are calculated: 10 minutes prior work start, 20 minutes prior work start, 30 minutes prior work start and 40 minutes prior work start. Values larger than these are removed due to unlikely nature of such commute.
+
+From this table bins are calculated for time necessary to arrive before 8:00 AM - a popular work and school start hour in Europe. Each connection was analyzed for trains allowing to arrive at destination station at 7:50 AM, 7:40 AM, 7:30 AM and 7:20 AM.
+
+Solving a shortest optimization problem on such scale of a dataset would not be feasible using an everyday computer. A Dijkstra algorithm [@dijkstra1959note] is therefore proposed to be calculated of each set of two stations. A method of conducting such algorithm for a GTFS dataset using Python was described and developed by @Github2018. The script available in Appendix 6 contains modifications necessary to accomodate restrictions regarding arrival times (bins) and execute pathfinding on a bulk scale.
+
+In order to allow an arrival constrained route calculation, the connections are filtered for each time bin and route is calculated backwards, i.e. using the first connection arriving at destination comming from the direction of origin. The final result is then inverted again. This approach allows to prepare and save data for morning commute between each set of stations for each arrival time bin for during morning rush. Resulting routings are then saved as a `json` file structured in a following way:
 
 ```json
 {
@@ -450,21 +483,13 @@ Station to station times were then calculated using the method described and dev
 }
 ```
 
-Such structure provided a way to calculate necessary routes once and contain all possibly necessary information for further calculations.
+The above structure provides a way of storing all data on a trip, that are necessary for further analysis. Information on origin and destination station is saved as well as times of departure/arrival for both of them. The total duration of a trip taken is also recorded, together with a count of all stops taken throught the journey and the average speed along it. Each train trip necessary to be taken along the journey is logged using its GTFS Id, along with all stations a train stops at during the trip, departure and arrival times, duration, distance and average speed for each segment of route is also recorded. The overall journey contains a summary of changes count as well as precise information on where necessary changes (if any) must occur, in which sequence and how long is the waiting time a passenger must consider.
 
-TODO: Until 13.12
+## Route amenities calculation
 
-## Station to station amenities calcualtion
+Having retrieved data from Vagonweb.cz, it is now time to employ it for a good purpose. From 3748 trips operated by ÖBB in Vienna and Lower Austria, that are a part of the GTFS dataset, the enthustiast-run database contained data on 2092 of them (55.8%). Route amenities were awarded based on publically available characteristics of the rolling stock provided by
 
-TODO: Until 13.12
-
-### Amenities per station score
-
-Amenities at each station considered by the analysis (Vienna and Lower Austria only) were extracted using Python from Netex files available at https://data.oebb.at/de/datensaetze~netex-geodaten~.
-
-### Route score
-
-Data was webscraped from vagonweb.cz. From 3748 trips handled by ÖBB in Vienna and Lower Austria, the enthustiast-run database contained data on 2092 of them (55.8%). The route score for train compositions was calculated based on data available from ÖBB https://data.oebb.at/de/datensaetze~fahrzeuge-personenverkehr~. Trips were attributed with following:
+Data was webscraped from vagonweb.cz. From 3748 trips handled by ÖBB in Vienna and Lower Austria, the enthustiast-run database contained data on 2092 of them (55.8%). The route score for train compositions was calculated based on data available in @fahrzeugdaten. The attributes involve the presence of following features:
 
 - CCTV
 - Wheelchair place
@@ -472,120 +497,22 @@ Data was webscraped from vagonweb.cz. From 3748 trips handled by ÖBB in Vienna 
 - Air Conditioning
 - WiFi
 - Low Floor
-- Year built
 
-Route attribute assignment procedure was conducted using Python script below. Each trip from GTFS feed was retrieved from `json` file from vagonweb.cz. Data on composition were then retrieved and checked against official dataset of ÖBB. If composition contained certain amenity in any of carriages, it was marked as true, otherwise a false value was given.
+Each route calculated according using the [modified Dijkstra algorithm](## Commuter to connection assignment) receives a score calculated for each of the above amenities. The score indicates the percentage of total route distance with a presence of a selected amenities. As an example: the route consists of 100 kilometers, 90 of which are spent onboard a train equiped with air conditioning, 10 kilometers are spent onboard an older unit without air conditioning. A score for such imaginary trip would be 0.9.
 
-```python
-import json
-import pandas as pd
-from collections import Counter
-from tqdm import tqdm
+Trip attribute assignment procedure is conducted using Python script available in Appendix 7. For each route considered, each trip within it is checked by the script for information contained in the dataset retrieved from Vagonweb.cz. For trains that do not compose of Electric Multiple Units (EMUs) or Diesel Multiple Units (DMUs), a presence of an amenity in any of carriages is considered as presence of the amenity in the whole composition. With an amenity not present in any of the carriages, EMUs or DMUs within the composition absence of it is marked.
 
-path = "vagonweb/webscraping_result.json"
-gtfs_path = "GTFS_Simplified/trips.txt"
-def findGTFS() -> pd.DataFrame:
-    trips = pd.read_csv(gtfs_path)
-    trips["trip_short_name"] = trips["trip_short_name"].str.extract("(\d+)")
-    return trips[["trip_short_name", "trip_id", "route_id"]]
-
-
-def computeAttributes(data: dict) -> pd.DataFrame:
-    attribute_list = []
-    fahrzeuge = pd.read_csv("vagonweb/OBB Baureihen.csv")
-    gtfs = findGTFS()
-    for trip in tqdm(data, desc="Processing trips"):
-        composition = data.get(trip)
-        gtfs_trip_id = (
-            gtfs[gtfs["trip_short_name"] == trip]["trip_id"].values[0]
-            if not gtfs[gtfs["trip_short_name"] == trip].empty
-            else None
-        )
-        gtfs_route_id = (
-            gtfs[gtfs["trip_short_name"] == trip]["route_id"].values[0]
-            if not gtfs[gtfs["trip_short_name"] == trip].empty
-            else None
-        )
-        attr = {
-            "trip": trip,
-            "gtfs-trip-id": gtfs_trip_id,
-            "gtfs-route-id": gtfs_route_id,
-        }
-        for carriage in composition:
-            attr = {
-                "trip": trip,
-                "gtfs-trip-id": gtfs_trip_id,
-                "gtfs-route-id": gtfs_route_id,
-                "cctv": False,
-                "Wheelchair": False,
-                "Bicycle": False,
-                "ac": False,
-                "WiFi": False,
-                "LowFloor": False,
-                "Year": int,
-            }
-            attributes = fahrzeuge[fahrzeuge["Number"].isin([carriage])]
-            if len(attributes) < 1:
-                continue
-            attr["ac"] = (
-                True
-                if attributes["Klimatisierter Fahrgastinnenraum"].values[0] == "ja"
-                and ~attr["ac"]
-                else False
-            )
-            attr["Bicycle"] = (
-                True
-                if attributes["Fahrradplätze"].values[0] == "ja" and ~attr["Bicycle"]
-                else False
-            )
-            attr["cctv"] = (
-                True
-                if attributes["Videoüberwachung"].values[0] == "ja" and ~attr["cctv"]
-                else False
-            )
-            attr["LowFloor"] = (
-                True
-                if attributes["Niederflurzustieg"].values[0] == "ja"
-                and ~attr["LowFloor"]
-                else False
-            )
-            attr["Wheelchair"] = (
-                True
-                if attributes["Rollstuhlplätze"].values[0] == "ja"
-                and ~attr["Wheelchair"]
-                else False
-            )
-            attr["WiFi"] = (
-                True
-                if attributes["W-LAN"].values[0] == "ja" and ~attr["WiFi"]
-                else False
-            )
-
-        attribute_list.append(attr)
-    return pd.DataFrame(attribute_list)
-
-
-def main():
-    with open(path, "r") as file:
-        data = json.load(file)
-    # computeStatistics(data)
-    computeAttributes(data).to_csv("vagonweb/trip_attributes.csv")
-
-
-if __name__ == "__main__":
-    main()
-
-```
-
-#### Connection score
-
-Connection amenities were calculated based on all trips taken during a commute. They were then weighted based on travel duration on each train co create a score between 0 and 1, based on each trips' attributes. 0 meaning a complete lact of amenity during the travel and 1 meaning accessibility of amenity during the entire travel. Year built value was calculated as a weighted average and the rounded to a full year. If certain rolling stock data was not available for a connection, it was interpolated using an average score for all retrieved connections from vagonweb.cz. The average scores for all connections were:
+Route amenities are then calculated based on all trips taken during a commute. If certain rolling stock data was not available for a connection, it was interpolated using an average score for all retrieved connections from Vagonweb.cz. The average scores for all connections are shown in Table 4.
 
 | CCTV | Wheelchair | Bicycle | AC   | WiFi | Low Floor |
 | ---- | ---------- | ------- | ---- | ---- | --------- |
 | 0.6  | 0.77       | 0.97    | 0.88 | 0.27 | 0.6       |
 
-Calculations were conducted using `Trip scoring/scoring.py` and `vagonweb/trip_score.py` Python scripts.
+Table: Average scores for connections retrieved from Vagonweb.cz
+
+Summary of each commute is enriched with data on distance, duration and number of necessary changes. Additionally the time of arrival before the desired hour is also added as a column.
+
+Full code covering this calculation is available in Appendix 8.
 
 # Analysis
 
@@ -596,7 +523,7 @@ Stations were then assigned their connection attributes based on weighted averag
 | ---------- | ----------------- | ------------------------------ | -------------------- | ---- | ---------- | ------- | ---- | ---- | --------- |
 | at:49:1349 | Wien Hauptbahnhof | 07:20                          | 1500                 | 0.6  | 0.77       | 0.97    | 0.88 | 0.27 | 0.6       |
 
-Times of arrival at destination were attributed based on distances according to (Peperna, 1982) presented by https://www.arbeiterkammer.at/infopool/wien/Verkehr_und_Infrastruktur_56.pdf. The function states, that only 10% to 30% of people will be willing to walk to their place of work for more than 500 meters if there is public transit available, with 0% to 10% willing to do so at 800m. Therefore only 500m distance was attributed according to walking time. The times of arrival present as follows:
+Times of arrival at destination were attributed based on distances according to [@peperna1982einzugsbereiche] presented by @brezinaPendelnOstregionPotenziale2015. The function states, that only 10% to 30% of people will be willing to walk to their place of work for more than 500 meters if there is public transit available, with 0% to 10% willing to do so at 800m. Therefore only 500m distance was attributed according to walking time. The times of arrival present as follows:
 
 | Distance [meters] | Walking time | Public Transit Time | Preffered time of arrival |
 | ----------------- | ------------ | ------------------- | ------------------------- |
@@ -611,6 +538,10 @@ Times of arrival at destination were attributed based on distances according to 
 This allowed to calculate number of people potentially commuting in each of the hours, based on 250m rasters and their distances to stations. Each time slot was assigned the sum of people that work or study within a raster assigned the destination station, laying within a set distance. This was conducted using Tableau Prep in 1 second of processing time, contrary to 4 hours of processing time forecasted by `tqdm` package in Python.
 
 TODO: Until 01.01.2025
+
+# Bibliography
+
+<div id="refs"></div>
 
 # Appendix
 
@@ -822,4 +753,910 @@ parse_stations_to_geojson(stations_input_path, stops_output_path)
 parse_network_to_geojson(network_input_path, network_output_path)
 ```
 
-# Bibliography
+## Appendix 3
+
+Python code used for webscraping the Vagonweb.cz website.
+
+Controller file:
+
+```python
+from webscraper import __request_vagonweb__, __extract_train_class__
+import pandas as pd
+import json
+from datetime import datetime
+import matplotlib.pyplot as plt
+import time
+import random
+
+trips_path = "GTFS_Simplified/trips.txt"
+delimiter = ","
+
+
+def load_trips(trips_path, delimiter) -> pd.DataFrame:
+    trips = pd.read_csv(trips_path, delimiter=delimiter)
+    return trips
+
+
+def extract_trip_identifier(trips_short_name) -> None | set:
+    if pd.isna(trips_short_name):
+        return None, None
+    parts = trips_short_name.split()
+    return parts[1], parts[0]
+
+
+def process_trips(trips: pd.DataFrame) -> dict:
+    trips_data = {}
+    for trip_short_name in trips["trip_short_name"]:
+        number, category = extract_trip_identifier(trip_short_name)
+        if number and category:
+            trips_data[number] = category
+    keyset = trips_data.keys()
+    print(len(keyset))
+    return trips_data
+
+
+trips = process_trips(load_trips(trips_path, delimiter))
+
+tripstest = dict(list(trips.items())[3262:])
+
+
+def scrape(trips: dict) -> dict:
+    def standardize_category(category: str) -> str:
+        if category == "S":
+            return "R"
+        else:
+            return category
+
+    i = 0
+    class_storage = {}
+    for train in trips.keys():
+        category = standardize_category(trips.get(train))
+        train_class = __extract_train_class__(
+            __request_vagonweb__("ÖBB", category, train, 2024)
+        )
+        class_storage[train] = train_class
+        i = i + 1
+        print("Done " + str(i) + " out of " + str(len(trips.keys())))
+    return class_storage
+
+
+file_path = "vagonweb/webscraping_result.json"
+retrieval_path = "vagonweb/retrieval_times.json"
+
+
+def save_to_json(data: dict, file_path: str) -> None:
+    with open(file_path, "w") as json_file:
+        json.dump(data, json_file, indent=4)
+
+
+def scrape_and_update(trips: dict, file_path: str) -> None:
+    def standardize_category(category: str) -> str:
+        if category == "S":
+            return "R"
+        else:
+            return category
+
+    def makeplot(retrieval_data, path) -> None:
+        plt.figure(figsize=(10, 6))
+        plt.plot(retrieval_data, marker="o")
+        plt.title("Retrieval Times")
+        plt.xlabel("Request Number")
+        plt.ylabel("Time (seconds)")
+        plt.grid(True)
+        plt.savefig(
+            f"/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/vagonweb/{path}.svg"
+        )
+        plt.savefig(
+            f"/Users/maciek/Documents/Dokumenty — MacBook Pro (Maciej)/Wirtschaftsuniversitat Wien/Year 5/DOA/Data-Analysis-and-Optimisation/vagonweb/{path}.svg"
+        )
+        plt.show()
+
+    try:
+        with open(file_path, "r") as json_file:
+            existing_data: dict = json.load(json_file)
+        with open(
+            retrieval_path,
+            "r",
+        ) as json_file:
+            retrieval_times: dict = json.load(json_file)
+    except FileNotFoundError:
+        existing_data = {}
+        retrieval_times = {}
+
+    i = 0
+    for train in trips.keys():
+        start_time = datetime.now()
+        category = standardize_category(trips.get(train))
+        train_class = __extract_train_class__(
+            __request_vagonweb__("ÖBB", category, train, 2024)
+        )
+        if not (train_class) and category == "R":
+            train_class = __extract_train_class__(
+                __request_vagonweb__("ÖBB", "SB", train, 2024)
+            )
+        existing_data[train] = train_class
+        delta = (datetime.now() - start_time).total_seconds()
+        retrieval_times[train] = {"order": i, "time": delta}
+        with open(file_path, "w") as json_file:
+            json.dump(existing_data, json_file, indent=4)
+        with open(
+            retrieval_path,
+            "w",
+        ) as json_file:
+            json.dump(retrieval_times, json_file, indent=4)
+        i += 1
+        print(f"Done {i-3262} out of {len(trips.keys())}. Time elapsed: {delta}s")
+        time.sleep(random.randrange(0, 360) / 100)
+
+    # Save updated data back to JSON file
+    with open(file_path, "w") as json_file:
+        json.dump(existing_data, json_file, indent=4)
+    with open(
+        retrieval_path,
+        "w",
+    ) as json_file:
+        json.dump(retrieval_times, json_file, indent=4)
+    makeplot(retrieval_times.values(), "retrieval")
+
+scrape_and_update(tripstest, file_path)
+```
+
+Webscraper file:
+
+```python
+from urllib.request import Request, urlopen
+import urllib.parse as parse_url
+from bs4 import BeautifulSoup
+import ssl
+
+
+baseurl = "https://www.vagonweb.cz/razeni/vlak.php?"
+
+
+def create_request(operator: str, category: str, number: str, year=2024) -> str:
+    url = baseurl
+    if operator:
+        url = url + "&zeme=" + parse_url.quote(operator)
+    if category:
+        url = url + "&kategorie=" + category
+    if number:
+        url = url + "&cislo=" + number
+    if year:
+        url = url + "&rok=" + str(year)
+    return url
+
+
+def __request_vagonweb__(
+    operator: str, category: str, number: str, year=2024
+) -> BeautifulSoup:
+    url = create_request(operator=operator, category=category, number=number, year=year)
+    context = ssl._create_unverified_context()
+    # headers = {"User-Agent": "PostmanRuntime/7.42.0", "Connection": "keep-alive"}
+    req = Request(url)
+    req.add_header(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36",
+    )
+    req.add_header("Connection", "keep-alive")
+
+    try:
+        response = urlopen(req, context=context)
+        html_bytes = response.read()
+        html_content = html_bytes.decode("utf-8")  # Decode bytes to string
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        exit()
+    return BeautifulSoup(html_content, "html.parser")
+
+
+def __extract_train_class__(soup: BeautifulSoup) -> list:
+    result = []
+    vlacek_table = soup.find("table", class_="vlacek")
+
+    if vlacek_table:
+        # Use CSS selector to find the desired span element
+        selector_carriages = "tr > td.bunka_vozu"
+        carriages = vlacek_table.select(selector_carriages)
+        for carriage in carriages:
+            selector_class = "div > div > span.tab-radam"
+            className = carriage.select_one(selector_class)
+            if className:
+                result.append(className.get_text(strip=True))
+    return result
+```
+
+## Appendix 4
+
+Processing spatial join of rasters with stations. Calculation of a distance matrix
+
+```python
+# %%
+import geopandas as gpd
+import pandas as pd
+import matplotlib.pyplot as plt
+from shapely.geometry import LineString, Point, MultiPoint, Polygon
+import numpy as np
+from multiprocessing import Pool, cpu_count
+
+raster_points_Wien = gpd.read_file(
+    "ArcGIS/RasterPointsWien_ExportFeatures.shp"
+)
+print(len(raster_points_Wien))
+raster_points_NO = gpd.read_file(
+    "ArcGIS/RasterPointsNO.shp"
+)
+raster_points_ALL = gpd.read_file(
+    "ArcGIS/RasterPointsALL.shp"
+)
+distance_bands_Wien = gpd.read_file(
+    "ArcGIS/DistanceAreasWien.shp"
+)
+distance_bands_NO = gpd.read_file(
+    "ArcGIS/Stops_MultipleRingBuffer_ExportFeatures.shp"
+)
+
+# %%
+print(raster_points_Wien.crs)
+distance_bands_Wien = distance_bands_Wien.to_crs(raster_points_Wien.crs)
+raster_points_NO = raster_points_NO.to_crs(raster_points_Wien.crs)
+distance_bands_NO = distance_bands_NO.to_crs(raster_points_Wien.crs)
+
+# %%
+
+raster_join_wien = raster_points_Wien.sjoin(distance_bands_Wien, how="left")
+raster_join_no = raster_points_NO.sjoin(distance_bands_NO, how="left")
+print(raster_join_wien.head())
+print(f"Vienna data with {len(raster_join_wien)} rows")
+
+# %%
+print(raster_join_no.head())
+print(f"Lower Austria data with {len(raster_join_no)} rows")
+
+# %%
+
+raster_assigment_union = pd.concat([raster_join_no, raster_points_Wien])
+print(f"Unioned data for {len(raster_assigment_union)} assignmens.")
+print(raster_assigment_union.head())
+
+
+# %%
+def GetStationsVienna(df=distance_bands_Wien) -> list:
+    pattern = r"(at:\d+:\d+).*?(\d+ - \d+)"
+    df[["station_code", "range"]] = df["Name"].str.extract(pattern)
+    station_codes = df["station_code"].unique().tolist()
+    return station_codes
+
+
+def GetStationsNO(df=distance_bands_NO) -> list:
+    station_codes = df["GStopID"].unique().tolist()
+    return station_codes
+
+
+def DistanceMatrixVienna(
+    rasters=raster_join_wien, pattern=r"(at:\d+:\d+).*?(\d+ - \d+)"
+) -> list:
+    # Extract "station_code" and "range" from the "Name" column
+    extracted = rasters["Name"].str.extract(pattern)
+    rasters["station_code"] = extracted[0]  # Matches the first group (e.g., at:49:94)
+    rasters["range"] = extracted[1]  # Matches the second group (e.g., 6000 - 8000)
+
+    # Filter out rows where 'FromBreak' is NaN
+    rasters = rasters.dropna(subset=["FromBreak"])
+
+    # Group by 'gid' and construct dictionaries
+    matrix = [
+        {"gid": gid, **dict(zip(group["station_code"], group["FromBreak"]))}
+        for gid, group in rasters.groupby("gid")
+    ]
+
+    return matrix
+
+
+def DistanceMatrixLowerAustria(rasters=raster_join_no, stations=None) -> list:
+    # Filter out rows where 'distance' is NaN
+    rasters = rasters.dropna(subset=["distance"])
+
+    # Group by 'gid' and construct dictionaries for each group
+    matrix = [
+        {"gid": gid, **dict(zip(group["GStopID"], group["distance"]))}
+        for gid, group in rasters.groupby("gid")
+    ]
+
+    return matrix
+
+
+dist_vienna = DistanceMatrixVienna()
+dist_lower_austria = DistanceMatrixLowerAustria()
+OD_Vienna = pd.DataFrame(dist_vienna)
+OD_Vienna.to_csv("Straßennetz/WienMatrix.csv")
+OD_LoverAustria = pd.DataFrame(dist_lower_austria)
+OD_LoverAustria.to_csv("Straßennetz/NOMatrix.csv")
+
+
+def MergeLists(base=dist_lower_austria, to_merge=dist_vienna, key="gid"):
+    # Create a dictionary to hold the merged results
+    # Convert lists of dictionaries into DataFrames
+    df1 = pd.DataFrame(base).set_index(key)
+    df2 = pd.DataFrame(to_merge).set_index(key)
+
+    # Merge the two DataFrames on the key, preserving all data
+    merged_df = df1.combine_first(df2).reset_index()
+
+    # Convert the merged DataFrame back to a list of dictionaries
+    merged_list = merged_df.to_dict(orient="records")
+    return merged_list
+
+
+OD_All = pd.DataFrame(MergeLists())
+OD_All.to_csv("Straßennetz/GrossraumWienMatrix.csv")
+
+
+def exclude_empty_rows(df=OD_All, key="gid") -> pd.DataFrame:
+    # Check if all columns except the key column are NaN
+    non_empty_mask = ~df.drop(columns=[key]).isna().all(axis=1)
+
+    # Filter the DataFrame to keep only rows that are not completely empty
+    non_empty_rows = df[non_empty_mask]
+    return non_empty_rows
+
+
+rasters_with_station = exclude_empty_rows()
+rasters_with_station.to_csv("Straßennetz/WithStation.csv")
+
+```
+
+## Appendix 5
+
+Assigning rasters to the nearest station.
+
+```python
+import pandas as pd
+from multiprocessing import Pool, cpu_count
+from datetime import datetime
+
+with_station_path = "Straßennetz/WithStation.csv"
+
+
+def process_row(row) -> dict[str, str, int]:
+    clean_row = row.drop("gid").dropna()
+    lowest = clean_row.idxmin()
+    return {
+        "raster": row["gid"],
+        "stop_id": lowest,
+        "distance": clean_row[lowest],
+        "finished_at": datetime.now(),
+    }
+
+
+def main() -> pd.DataFrame:
+    matrix = pd.read_csv(with_station_path, index_col=0)
+
+    # Prepare data for parallel processing
+    rows = [row for _, row in matrix.iterrows()]
+    num_cores = cpu_count() - 2
+    start = datetime.now()
+    print(f"Started at {start}")
+    with Pool(num_cores) as pool:
+        assignments = pool.map(process_row, rows)
+
+    end = datetime.now()
+    print(f"Executed {len(rows)} in {end-start}.")
+    return pd.DataFrame(assignments)
+
+
+if __name__ == "__main__":
+    main().to_csv("Straßennetz/StationAssignment.csv")
+```
+
+## Appendix 6
+
+Modified Dijkstra algorith [@dijkstra1959note], inspired by @Github2018.
+
+```python
+import pandas as pd
+from collections import defaultdict
+import heapq
+import datetime
+import json
+import os
+import numpy as np
+from tqdm import tqdm
+
+
+def time_to_seconds(timestr):
+    """Convert HH:MM:SS to seconds from midnight."""
+    h, m, s = map(int, timestr.split(":"))
+    return h * 3600 + m * 60 + s
+
+
+def find_route_with_required_arrival(
+    origin,
+    destination,
+    required_arrival_time_str,
+    stops,
+    stop_times,
+    connections,
+    arrivals_index,
+):
+    required_arrival_time = time_to_seconds(required_arrival_time_str)
+
+    if "shape_dist_traveled" not in stop_times.columns:
+        raise ValueError(
+            "The stop_times.txt file must have a 'shape_dist_traveled' column."
+        )
+
+    lookup_df = stop_times.set_index([stop_times.trip_id, stop_times.stop_id])
+
+    latest_arrival = defaultdict(lambda: -1)
+    latest_arrival[destination] = required_arrival_time
+
+    pq = [(-required_arrival_time, destination)]
+    predecessor = {}
+
+    # Backward search
+    while pq:
+        cur_neg_time, cur_stop = heapq.heappop(pq)
+        cur_time = -cur_neg_time
+
+        if cur_time < latest_arrival[cur_stop]:
+            continue
+
+        if cur_stop in arrivals_index:
+            for fstop, fdep, tarr, trip_id in arrivals_index[cur_stop]:
+                if cur_time >= tarr:
+                    if fdep > latest_arrival[fstop]:
+                        latest_arrival[fstop] = fdep
+                        predecessor[fstop] = (cur_stop, fdep, tarr, trip_id)
+                        heapq.heappush(pq, (-fdep, fstop))
+
+    if latest_arrival[origin] == -1:
+        # No route found
+        return None, None
+
+    # Reconstruct route forward
+    route_info = [
+        {
+            "stop_id": origin,
+            "arrival_sec": latest_arrival[origin],
+            "departure_sec": None,
+            "trip_id": None,
+        }
+    ]
+
+    current = origin
+    while current in predecessor:
+        next_stop, fdep, tarr, trip_id = predecessor[current]
+        route_info[-1]["departure_sec"] = fdep
+        route_info[-1]["trip_id"] = trip_id
+        route_info.append(
+            {
+                "stop_id": next_stop,
+                "arrival_sec": tarr,
+                "departure_sec": None,
+                "trip_id": trip_id,
+            }
+        )
+        current = next_stop
+
+    # Convert times and gather stop info
+    for seg in route_info:
+        seg["arrival_time_str"] = (
+            str(datetime.timedelta(seconds=int(seg["arrival_sec"])))
+            if seg["arrival_sec"] is not None and seg["arrival_sec"] >= 0
+            else "N/A"
+        )
+        seg["departure_time_str"] = (
+            str(datetime.timedelta(seconds=int(seg["departure_sec"])))
+            if seg["departure_sec"] is not None and seg["departure_sec"] >= 0
+            else "N/A"
+        )
+
+        stop_row = stops[stops.stop_id == seg["stop_id"]]
+        seg["stop_name"] = (
+            stop_row.iloc[0]["stop_name"] if not stop_row.empty else seg["stop_id"]
+        )
+
+    # Changes
+    changes = []
+    change_count = 0
+    origin_dep_sec = (
+        route_info[0]["departure_sec"]
+        if route_info[0]["departure_sec"] is not None
+        else route_info[0]["arrival_sec"]
+    )
+    final_arr_sec = route_info[-1]["arrival_sec"]
+
+    for i in range(len(route_info)):
+        if (
+            i > 0
+            and route_info[i]["trip_id"] != route_info[i - 1]["trip_id"]
+            and route_info[i]["trip_id"] is not None
+            and route_info[i - 1]["trip_id"] is not None
+        ):
+            curr_seg = route_info[i]
+            if (
+                curr_seg["departure_sec"] is not None
+                and curr_seg["arrival_sec"] is not None
+            ):
+                waiting_time_sec = curr_seg["departure_sec"] - curr_seg["arrival_sec"]
+                changes.append(
+                    {
+                        "station": curr_seg["stop_name"],
+                        "duration": int(waiting_time_sec) / 60,
+                        "sequence": i,
+                    }
+                )
+                change_count += 1
+
+    # Trip segments
+    trip_segments = defaultdict(list)
+    for i in range(len(route_info) - 1):
+        fseg = route_info[i]
+        tseg = route_info[i + 1]
+        trip_id = fseg["trip_id"]
+        if trip_id is None:
+            continue
+        fstop = fseg["stop_id"]
+        tstop = tseg["stop_id"]
+        try:
+            f_dist = float(lookup_df.loc[(trip_id, fstop), "shape_dist_traveled"])
+            t_dist = float(lookup_df.loc[(trip_id, tstop), "shape_dist_traveled"])
+        except KeyError:
+            continue
+
+        segment_distance_m = t_dist - f_dist
+        if fseg["departure_sec"] is not None and tseg["arrival_sec"] is not None:
+            travel_time_sec = tseg["arrival_sec"] - fseg["departure_sec"]
+        else:
+            continue
+
+        avg_speed_kmh = (
+            (segment_distance_m * 3.6) / travel_time_sec if travel_time_sec > 0 else 0
+        )
+
+        trip_segments[trip_id].append(
+            {
+                "from": fseg["stop_name"],
+                "departure": fseg["departure_time_str"],
+                "to": tseg["stop_name"],
+                "arrival": tseg["arrival_time_str"],
+                "duration": int(travel_time_sec),
+                "distance": int(segment_distance_m),
+                "speed": avg_speed_kmh,
+            }
+        )
+
+    # Build trips_info
+    trips_info = {}
+    for trip_id, segments in trip_segments.items():
+        total_duration = sum(s["duration"] for s in segments)
+        total_distance = sum(s["distance"] for s in segments)
+        stop_count = len(segments) + 1
+        avg_speed_kmh = (
+            (total_distance * 3.6 / total_duration) if total_duration > 0 else 0
+        )
+
+        trips_info[trip_id] = {
+            "from": segments[0]["from"],
+            "to": segments[-1]["to"],
+            "duration": total_duration,
+            "stop_count": stop_count,
+            "average_speed": avg_speed_kmh,
+            "via": segments,
+        }
+
+    total_duration = (
+        final_arr_sec - origin_dep_sec
+        if (final_arr_sec is not None and origin_dep_sec is not None)
+        else 0
+    )
+    key = f"{origin}-{destination}-{required_arrival_time_str}"
+    result = {
+        "from": origin,
+        "departure": route_info[0]["departure_time_str"],
+        "to": destination,
+        "arrival": route_info[-1]["arrival_time_str"],
+        "trips": trips_info,
+        "duration": total_duration,
+        "changeCount": change_count,
+        "changesAt": changes,
+    }
+
+    return key, result
+
+
+if __name__ == "__main__":
+    # Load preprocessed data
+    stops = pd.read_csv("GTFS_Simplified/stops.txt", dtype={"stop_id": str})
+    stop_times = pd.read_csv(
+        "GTFS_Simplified/stop_times.txt", dtype={"trip_id": str, "stop_id": str}
+    )
+    connections = pd.read_csv("djkstra/connections.csv")
+    with open("djkstra/arrivals_index.json", "r") as f:
+        arrivals_index_data = json.load(f)
+
+    arrivals_index = defaultdict(list)
+    for k, v in arrivals_index_data.items():
+        arrivals_index[k] = v
+
+    # Example: run for multiple (origin, destination) pairs and multiple arrival times
+    df = pd.read_csv("pendler/aggregate_pendler.csv")
+    origins_destinations = [
+        tuple(row) for row in df[["ao_stop_id", "wo_stop_id"]].to_numpy()
+    ]
+
+    arrival_times = ["07:20:00", "07:30:00", "07:40:00", "07:50:00"]
+
+    all_results = {}
+
+    for origin, destination in tqdm(
+        origins_destinations, desc="Processing origin-destination pairs"
+    ):
+        for arr_time in arrival_times:
+            key, res = find_route_with_required_arrival(
+                origin,
+                destination,
+                arr_time,
+                stops,
+                stop_times,
+                connections,
+                arrivals_index,
+            )
+            if res is not None:
+                all_results[key] = res
+            else:
+                # If no route found, we can also store a placeholder or skip
+                all_results[key] = {"error": "No route found"}
+
+    # Save all results to a JSON file
+    with open("djkstra/results.json", "w") as f:
+        json.dump(all_results, f, indent=2)
+```
+
+## Appendix 7
+
+Route amenities score calculation script:
+
+```python
+import json
+import pandas as pd
+from collections import Counter
+from tqdm import tqdm
+
+path = "vagonweb/webscraping_result.json"
+gtfs_path = "GTFS_Simplified/trips.txt"
+def findGTFS() -> pd.DataFrame:
+    trips = pd.read_csv(gtfs_path)
+    trips["trip_short_name"] = trips["trip_short_name"].str.extract("(\d+)")
+    return trips[["trip_short_name", "trip_id", "route_id"]]
+
+
+def computeAttributes(data: dict) -> pd.DataFrame:
+    attribute_list = []
+    fahrzeuge = pd.read_csv("vagonweb/OBB Baureihen.csv")
+    gtfs = findGTFS()
+    for trip in tqdm(data, desc="Processing trips"):
+        composition = data.get(trip)
+        gtfs_trip_id = (
+            gtfs[gtfs["trip_short_name"] == trip]["trip_id"].values[0]
+            if not gtfs[gtfs["trip_short_name"] == trip].empty
+            else None
+        )
+        gtfs_route_id = (
+            gtfs[gtfs["trip_short_name"] == trip]["route_id"].values[0]
+            if not gtfs[gtfs["trip_short_name"] == trip].empty
+            else None
+        )
+        attr = {
+            "trip": trip,
+            "gtfs-trip-id": gtfs_trip_id,
+            "gtfs-route-id": gtfs_route_id,
+        }
+        for carriage in composition:
+            attr = {
+                "trip": trip,
+                "gtfs-trip-id": gtfs_trip_id,
+                "gtfs-route-id": gtfs_route_id,
+                "cctv": False,
+                "Wheelchair": False,
+                "Bicycle": False,
+                "ac": False,
+                "WiFi": False,
+                "LowFloor": False,
+                "Year": int,
+            }
+            attributes = fahrzeuge[fahrzeuge["Number"].isin([carriage])]
+            if len(attributes) < 1:
+                continue
+            attr["ac"] = (
+                True
+                if attributes["Klimatisierter Fahrgastinnenraum"].values[0] == "ja"
+                and ~attr["ac"]
+                else False
+            )
+            attr["Bicycle"] = (
+                True
+                if attributes["Fahrradplätze"].values[0] == "ja" and ~attr["Bicycle"]
+                else False
+            )
+            attr["cctv"] = (
+                True
+                if attributes["Videoüberwachung"].values[0] == "ja" and ~attr["cctv"]
+                else False
+            )
+            attr["LowFloor"] = (
+                True
+                if attributes["Niederflurzustieg"].values[0] == "ja"
+                and ~attr["LowFloor"]
+                else False
+            )
+            attr["Wheelchair"] = (
+                True
+                if attributes["Rollstuhlplätze"].values[0] == "ja"
+                and ~attr["Wheelchair"]
+                else False
+            )
+            attr["WiFi"] = (
+                True
+                if attributes["W-LAN"].values[0] == "ja" and ~attr["WiFi"]
+                else False
+            )
+
+        attribute_list.append(attr)
+    return pd.DataFrame(attribute_list)
+
+
+def main():
+    with open(path, "r") as file:
+        data = json.load(file)
+    computeAttributes(data).to_csv("vagonweb/trip_attributes.csv")
+
+
+if __name__ == "__main__":
+    main()
+
+```
+
+## Appendix 8
+
+```python
+import pandas as pd
+import json
+from tqdm import tqdm
+import numpy as np
+import math as skibidi
+
+ROUTINGS_PATH = "djkstra/results.json"
+ATTRIBUTES_PATH = "vagonweb/trip_attributes.csv"
+AVERAGE_ATTR = {
+    "cctv": 0.6,
+    "Wheelchair": 0.77,
+    "Bicycle": 0.97,
+    "ac": 0.88,
+    "WiFi": 0.27,
+    "LowFloor": 0.6,
+}
+
+
+def main():
+    trip_score = pd.read_csv(ATTRIBUTES_PATH, index_col=0)
+    with open(ROUTINGS_PATH, "r") as file:
+        routings = json.load(file)
+
+    def score_trip(trip: str, duration: int) -> dict:
+        trip_attr = trip_score[trip_score["gtfs-trip-id"] == trip]
+        attribute_set_count = {
+            "cctv": duration,
+            "Wheelchair": duration,
+            "Bicycle": duration,
+            "ac": duration,
+            "WiFi": duration,
+            "LowFloor": duration,
+        }
+        if trip_attr.empty:
+            attributes = AVERAGE_ATTR
+        else:
+            attributes = {
+                "cctv": (
+                    AVERAGE_ATTR.get("cctv") * duration
+                    if np.isnan(trip_attr["cctv"].values[0])
+                    else (duration if trip_attr["cctv"].values[0] else 0)
+                ),
+                "Wheelchair": (
+                    AVERAGE_ATTR.get("Wheelchair") * duration
+                    if np.isnan(trip_attr["Wheelchair"].values[0])
+                    else (duration if trip_attr["Wheelchair"].values[0] else 0)
+                ),
+                "Bicycle": (
+                    AVERAGE_ATTR.get("Bicycle") * duration
+                    if np.isnan(trip_attr["Bicycle"].values[0])
+                    else (duration if trip_attr["Bicycle"].values[0] else 0)
+                ),
+                "ac": (
+                    AVERAGE_ATTR.get("ac") * duration
+                    if np.isnan(trip_attr["ac"].values[0])
+                    else (duration if trip_attr["ac"].values[0] else 0)
+                ),
+                "WiFi": (
+                    AVERAGE_ATTR.get("WiFi") * duration
+                    if np.isnan(trip_attr["WiFi"].values[0])
+                    else (duration if trip_attr["WiFi"].values[0] else 0)
+                ),
+                "LowFloor": (
+                    AVERAGE_ATTR.get("LowFloor") * duration
+                    if np.isnan(trip_attr["LowFloor"].values[0])
+                    else (duration if trip_attr["LowFloor"].values[0] else 0)
+                ),
+            }
+        return attributes, attribute_set_count
+
+    def process_routings(data):
+        rows = []
+        for key, value in tqdm(data.items(), desc="Processing routings"):
+            # Skip the "null" route
+            if key == "null":
+                continue
+
+            # Extract the fields
+            route_from = value.get("from")
+            route_to = value.get("to")
+            duration = value.get("duration") / 60
+            change_count = value.get("changeCount")
+            arrival = value.get("arrival")
+            arrival_set = key.split("-")[2]
+
+            # Calculate average and total change durations
+            changes = value.get("changesAt", [])
+            total_change_duration = sum(change["duration"] for change in changes)
+            average_change_duration = (
+                total_change_duration / change_count
+                if change_count and change_count > 0
+                else 0
+            )
+
+            # Extract trip IDs
+            trips = value.get("trips", {})
+            trip_attr = []
+            trip_attr_set = []
+            distances = []
+            for trip in trips.keys():
+                scores, attribute_set_count = score_trip(
+                    trip, duration=trips.get(trip).get("duration")
+                )
+                trip_attr.append(scores)
+                trip_attr_set.append(attribute_set_count)
+                distance = pd.DataFrame(trips.get(trip).get("via"))[
+                    "distance"
+                ].values.tolist()
+                distances = distances + distance
+            distance = sum(distances)
+            trips_attr_df = pd.DataFrame(trip_attr)
+            trips_score_result = pd.Series(trips_attr_df.sum(axis=0).to_dict())
+            trips_score_count = pd.Series(
+                pd.DataFrame(trip_attr_set).sum(axis=0).to_dict()
+            )
+            trips_calculated = (
+                (trips_score_result / trips_score_count).round(1).to_dict()
+            )
+
+            row = {
+                "from": route_from,
+                "to": route_to,
+                "arrival": arrival,
+                "arrival_set": arrival_set,
+                "duration": duration,
+                "distance": distance,
+                "change count": change_count,
+                "average change duration": skibidi.ceil(average_change_duration),
+                "total change duration": total_change_duration,
+            }
+            row.update(trips_calculated)
+            rows.append(row)
+        return rows
+
+    return process_routings(data=routings)
+
+
+if __name__ == "__main__":
+    pd.DataFrame(main()).to_csv("Trip scoring/trip_scores.csv")
+```
